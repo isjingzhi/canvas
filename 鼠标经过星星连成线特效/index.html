@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Canvas鼠标经过星星连成线特效 - A5源码</title>
+    <title>鼠标经过星星连成线特效</title>
 
     <style>
         html, body {
@@ -38,16 +38,12 @@
 
         .landscape {
             position: absolute;
-            bottom: 0px;
+            bottom: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /*background-image:url(https://openclipart.org/image/2400px/svg_to_png/250847/Trees-Landscape-Silhouette.png);
-            */
-            background-image: url('http://www.jq22.com/css/img/xkbg.png');
             background-size: 1000px 250px;
-            background-repeat: repeat-x;
-            background-position: center bottom;
+            background: url('./xkbg.png') repeat-x center bottom;
         }
     </style>
 </head>
@@ -63,7 +59,7 @@
         this.x = x;
         this.y = y;
         this.r = Math.floor(Math.random() * 2) + 1;
-        var alpha = (Math.floor(Math.random() * 10) + 1) / 10 / 2;
+        let alpha = (Math.floor(Math.random() * 10) + 1) / 10 / 2;
         this.color = "rgba(255,255,255," + alpha + ")";
     }
 
@@ -74,26 +70,26 @@
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
-    }
+    };
 
     Star.prototype.move = function () {
         this.y -= .15;
         if (this.y <= -10) this.y = HEIGHT + 10;
         this.draw();
-    }
+    };
 
     Star.prototype.die = function () {
         stars[this.id] = null;
         delete stars[this.id];
-    }
+    };
 
 
-    function Dot(id, x, y, r) {
+    function Dot(id, x, y) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.r = Math.floor(Math.random() * 5) + 1;
-        this.maxLinks = 2;
+
         this.speed = .5;
         this.a = .5;
         this.aReduction = .005;
@@ -110,27 +106,27 @@
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
-    }
+    };
 
     Dot.prototype.link = function () {
-        if (this.id == 0) return;
-        var previousDot1 = getPreviousDot(this.id, 1);
-        var previousDot2 = getPreviousDot(this.id, 2);
-        var previousDot3 = getPreviousDot(this.id, 3);
+        if (this.id === 0) return;
+        let previousDot1 = getPreviousDot(this.id, 1);
+        let previousDot2 = getPreviousDot(this.id, 2);
+        let previousDot3 = getPreviousDot(this.id, 3);
         if (!previousDot1) return;
         ctx.strokeStyle = this.linkColor;
         ctx.moveTo(previousDot1.x, previousDot1.y);
         ctx.beginPath();
         ctx.lineTo(this.x, this.y);
-        if (previousDot2 != false) ctx.lineTo(previousDot2.x, previousDot2.y);
-        if (previousDot3 != false) ctx.lineTo(previousDot3.x, previousDot3.y);
+        if (previousDot2 !== false) ctx.lineTo(previousDot2.x, previousDot2.y);
+        if (previousDot3 !== false) ctx.lineTo(previousDot3.x, previousDot3.y);
         ctx.stroke();
         ctx.closePath();
-    }
+    };
 
     function getPreviousDot(id, stepback) {
-        if (id == 0 || id - stepback < 0) return false;
-        if (typeof dots[id - stepback] != "undefined") return dots[id - stepback];
+        if (id === 0 || id - stepback < 0) return false;
+        if (typeof dots[id - stepback] !== "undefined") return dots[id - stepback];
         else return false;//getPreviousDot(id - stepback);
     }
 
@@ -142,20 +138,20 @@
         }
         this.color = "rgba(255,255,255," + this.a + ")";
         this.linkColor = "rgba(255,255,255," + this.a / 4 + ")";
-        this.x = this.x + Math.cos(degToRad(this.dir)) * this.speed,
-            this.y = this.y + Math.sin(degToRad(this.dir)) * this.speed;
+        this.x = this.x + Math.cos(degToRad(this.dir)) * this.speed;
+        this.y = this.y + Math.sin(degToRad(this.dir)) * this.speed;
 
         this.draw();
         this.link();
-    }
+    };
 
     Dot.prototype.die = function () {
         dots[this.id] = null;
         delete dots[this.id];
-    }
+    };
 
 
-    var canvas = document.getElementById('canvas'),
+    let canvas = document.getElementById('canvas'),
         ctx = canvas.getContext('2d'),
         WIDTH,
         HEIGHT,
@@ -173,8 +169,8 @@
     init();
 
     function setCanvasSize() {
-        WIDTH = document.documentElement.clientWidth,
-            HEIGHT = document.documentElement.clientHeight;
+        WIDTH = document.documentElement.clientWidth;
+        HEIGHT = document.documentElement.clientHeight;
 
         canvas.setAttribute("width", WIDTH);
         canvas.setAttribute("height", HEIGHT);
@@ -183,7 +179,7 @@
     function init() {
         ctx.strokeStyle = "white";
         ctx.shadowColor = "white";
-        for (var i = 0; i < initStarsPopulation; i++) {
+        for (let i = 0; i < initStarsPopulation; i++) {
             stars[i] = new Star(i, Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
             //stars[i].draw();
         }
@@ -194,10 +190,10 @@
     function animate() {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-        for (var i in stars) {
+        for (let i in stars) {
             stars[i].move();
         }
-        for (var i in dots) {
+        for (let i in dots) {
             dots[i].move();
         }
         drawIfMouseMoving();
@@ -212,35 +208,36 @@
         mouseMoveChecker = setTimeout(function () {
             mouseMoving = false;
         }, 100);
-    }
+    };
 
 
     function drawIfMouseMoving() {
         if (!mouseMoving) return;
 
-        if (dots.length == 0) {
+        if (dots.length === 0) {
             dots[0] = new Dot(0, mouseX, mouseY);
             dots[0].draw();
             return;
         }
 
-        var previousDot = getPreviousDot(dots.length, 1);
-        var prevX = previousDot.x;
-        var prevY = previousDot.y;
+        let previousDot = getPreviousDot(dots.length, 1);
+        let prevX = previousDot.x;
+        let prevY = previousDot.y;
 
-        var diffX = Math.abs(prevX - mouseX);
-        var diffY = Math.abs(prevY - mouseY);
+        let diffX = Math.abs(prevX - mouseX);
+        let diffY = Math.abs(prevY - mouseY);
 
         if (diffX < dotsMinDist || diffY < dotsMinDist) return;
 
-        var xVariation = Math.random() > .5 ? -1 : 1;
+        let xVariation = Math.random() > .5 ? -1 : 1;
         xVariation = xVariation * Math.floor(Math.random() * maxDistFromCursor) + 1;
-        var yVariation = Math.random() > .5 ? -1 : 1;
+        let yVariation = Math.random() > .5 ? -1 : 1;
         yVariation = yVariation * Math.floor(Math.random() * maxDistFromCursor) + 1;
         dots[dots.length] = new Dot(dots.length, mouseX + xVariation, mouseY + yVariation);
         dots[dots.length - 1].draw();
         dots[dots.length - 1].link();
     }
+
     //setInterval(drawIfMouseMoving, 17);
 
     function degToRad(deg) {
@@ -248,10 +245,6 @@
     }
 </script>
 
-<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
-    <p>适用浏览器：360、FireFox、Chrome、Opera、傲游、搜狗、世界之窗. 不支持Safari、IE8及以下浏览器。</p>
-    <p>来源：<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>
-</div>
 </body>
 </html>
 
