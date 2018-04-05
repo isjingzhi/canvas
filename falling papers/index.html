@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Canvas五彩纸屑飘落动画特效</title>
+    <title>五彩纸屑飘落动画特效</title>
 
     <style>
         body {
@@ -16,10 +16,10 @@
 <script>
     "use strict";
 
-    var _createClass = function () {
+    let _createClass = function () {
         function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-                var descriptor = props[i];
+            for (let i = 0; i < props.length; i++) {
+                let descriptor = props[i];
                 descriptor.enumerable = descriptor.enumerable || false;
                 descriptor.configurable = true;
                 if ("value" in descriptor) descriptor.writable = true;
@@ -40,9 +40,9 @@
         }
     }
 
-    var Progress = function () {
+    let Progress = function () {
         function Progress() {
-            var param = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+            let param = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
             _classCallCheck(this, Progress);
 
@@ -91,7 +91,7 @@
         return Progress;
     }();
 
-    var Confetti = function () {
+    let Confetti = function () {
         function Confetti(param) {
             _classCallCheck(this, Confetti);
 
@@ -123,8 +123,8 @@
         }
 
         Confetti.prototype.build = function build() {
-            for (var i = 0; i < this.length; ++i) {
-                var canvas = document.createElement("canvas"),
+            for (let i = 0; i < this.length; ++i) {
+                let canvas = document.createElement("canvas"),
                     ctx = canvas.getContext("2d");
 
                 canvas.width = Confetti.CONST.SPRITE_WIDTH;
@@ -148,12 +148,12 @@
         };
 
         Confetti.prototype.render = function render(now) {
-            var progress = this.progress.tick(now);
+            let progress = this.progress.tick(now);
 
             this.canvas.width = this.width;
             this.canvas.height = this.height;
 
-            for (var i = 0; i < this.length; ++i) {
+            for (let i = 0; i < this.length; ++i) {
                 this.ctx.save();
                 this.ctx.translate(this.sprites[i].position.initX + this.sprites[i].rotation * Confetti.CONST.ROTATION_RATE * progress, this.sprites[i].position.initY + progress * (this.height + this.yRange));
                 this.ctx.rotate(this.sprites[i].rotation);
@@ -182,7 +182,7 @@
     }();
 
     (function () {
-        var DURATION = 8000,
+        let DURATION = 8000,
             LENGTH = 120;
 
         new Confetti({

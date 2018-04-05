@@ -1,0 +1,23 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+}
+
+canvas {
+    margin-left: -40px;
+}
+
+#container {
+    width: 100%;
+}
+
+#color {
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    left: 30px;
+    top: 30px;
+}
