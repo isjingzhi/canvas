@@ -20,7 +20,7 @@ body {
     animation: mymove 5s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-    font-family: "黑体","宋体","手札体", "圆体", "楷体", serif;
+    font-family: monospace,SansSerif,"黑体","宋体","手札体", "圆体", "楷体", serif;
 
 }
 
