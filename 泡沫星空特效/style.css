@@ -1,0 +1,35 @@
+body {
+    background: #3E4777;
+    overflow: hidden;
+    text-align: center;
+    margin: 0;
+}
+
+.instructions {
+    letter-spacing: 0.2em;
+    color: white;
+    height: 100px;
+    width: 200px;
+    text-align: center;
+    background: transparent;
+    position: fixed;
+    top: 30px;
+    right: 0;
+    animation: mymove 2s;
+    animation-iteration-count: infinite;
+
+    /*-webkit-animation: mymove 5s infinite; !*Safari and Chrome*!*/
+}
+
+@keyframes mymove {
+    from {
+        opacity: 1;
+    font-size: 18px;
+
+    }
+    to {
+        opacity: 0;
+        font-size: 25px;
+    }
+}
+
