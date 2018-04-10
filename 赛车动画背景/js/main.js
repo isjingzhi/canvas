@@ -1,4 +1,4 @@
-var $ = {
+let $ = {
     canvas: null,
     ctx: null,
     canvas2: null,
@@ -102,8 +102,8 @@ function draw() {
 }
 
 function drawHUD(ctx, centerX, centerY, color) {
-    var radius = 50, tigs = [0, 90, 135, 180, 225, 270, 315],
-        angle = 90;
+    let radius = 50, tigs = [0, 90, 135, 180, 225, 270, 315],
+        angle;
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
@@ -113,7 +113,7 @@ function drawHUD(ctx, centerX, centerY, color) {
     ctx.strokeStyle = color;
     ctx.stroke();
 
-    for (var i = 0; i < tigs.length; i++) {
+    for (let i = 0; i < tigs.length; i++) {
         drawTig(ctx, centerX, centerY, radius, tigs[i], 7);
     }
 
@@ -123,7 +123,7 @@ function drawHUD(ctx, centerX, centerY, color) {
 }
 
 function drawPointer(ctx, color, radius, centerX, centerY, angle) {
-    var point = getCirclePoint(centerX, centerY, radius - 20, angle),
+    let point = getCirclePoint(centerX, centerY, radius - 20, angle),
         point2 = getCirclePoint(centerX, centerY, 2, angle + 90),
         point3 = getCirclePoint(centerX, centerY, 2, angle - 90);
 
@@ -143,8 +143,8 @@ function drawPointer(ctx, color, radius, centerX, centerY, angle) {
 }
 
 function drawTig(ctx, x, y, radius, angle, size) {
-    var startPoint = getCirclePoint(x, y, radius - 4, angle),
-        endPoint = getCirclePoint(x, y, radius - size, angle)
+    let startPoint = getCirclePoint(x, y, radius - 4, angle),
+        endPoint = getCirclePoint(x, y, radius - size, angle);
 
     ctx.beginPath();
     ctx.lineCap = 'round';
@@ -154,7 +154,7 @@ function drawTig(ctx, x, y, radius, angle, size) {
 }
 
 function getCirclePoint(x, y, radius, angle) {
-    var radian = (angle / 180) * Math.PI;
+    let radian = (angle / 180) * Math.PI;
 
     return {
         x: x + radius * Math.cos(radian),
@@ -163,7 +163,7 @@ function getCirclePoint(x, y, radius, angle) {
 }
 
 function calcMovement() {
-    var move = $.state.speed * 0.01,
+    let move = $.state.speed * 0.01,
         newCurve = 0;
 
     if ($.state.keypress.up) {
@@ -301,13 +301,13 @@ function drawMountain(pos, height, width) {
     $.ctx.fill();
 }
 
-function drawSky() {
-    $.ctx.fillStyle = $.colors.sky;
-    $.ctx.fillRect(0, 0, $.canvas.width, $.settings.skySize);
-}
+// function drawSky() {
+//     $.ctx.fillStyle = $.colors.sky;
+//     $.ctx.fillRect(0, 0, $.canvas.width, $.settings.skySize);
+// }
 
 function drawRoad(min, max, squishFactor, color) {
-    var basePos = $.canvas.width + $.state.xpos;
+    let basePos = $.canvas.width + $.state.xpos;
 
     $.ctx.fillStyle = color;
     $.ctx.beginPath();
@@ -320,7 +320,7 @@ function drawRoad(min, max, squishFactor, color) {
 }
 
 function drawCar() {
-    var carWidth = 160,
+    let carWidth = 160,
         carHeight = 50,
         carX = ($.canvas.width / 2) - (carWidth / 2),
         carY = 320;
@@ -336,7 +336,7 @@ function drawCar() {
 }
 
 function drawCarBody(ctx) {
-    var startX = 299, startY = 311,
+    let startX = 299, startY = 311,
         lights = [10, 26, 134, 152],
         lightsY = 0;
 
@@ -400,7 +400,7 @@ function drawCarBody(ctx) {
 }
 
 function roundedRect(ctx, color, x, y, width, height, radius, turn, turneffect) {
-    var skew = turn === true ? $.state.turn * turneffect : 0;
+    let skew = turn === true ? $.state.turn * turneffect : 0;
 
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -429,7 +429,7 @@ function roundedRect(ctx, color, x, y, width, height, radius, turn, turneffect) 
 }
 
 function drawGround(ctx, offset, lightColor, darkColor, width) {
-    var pos = ($.settings.skySize - $.settings.ground.min) + offset, stepSize = 1, drawDark = $.state.startDark,
+    let pos = ($.settings.skySize - $.settings.ground.min) + offset, stepSize = 1, drawDark = $.state.startDark,
         firstRow = true;
     ctx.fillStyle = lightColor;
     ctx.fillRect(0, $.settings.skySize, width, $.settings.ground.size);
