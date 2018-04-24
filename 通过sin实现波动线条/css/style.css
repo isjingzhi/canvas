@@ -1,0 +1,24 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    overflow-x: hidden;
+}
+
+@keyframes vibrate {
+    0% {
+        top: 0
+    }
+    50% {
+        top: 30px;
+    }
+    100%{
+        top:0;
+    }
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    animation: vibrate 1s infinite;
+}
