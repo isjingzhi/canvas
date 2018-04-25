@@ -2,14 +2,12 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 let cw = canvas.width = window.innerWidth;
 let ch = canvas.height = window.innerHeight;
-
-//ctx.fillStyle = "#000";
 let linesNum = 16;//线段总数
 let linesRy = [];//存储所有的线段
 let requestId = null;
 let color = "#ccc";
 let h, s, l = '50%', numOfL = 50;
-// let x,y;
+ctx.fillStyle = "#000";//相交点
 
 //line类
 function Line(flag) {
@@ -38,6 +36,7 @@ function Line(flag) {
         ctx.moveTo(this.a.x, this.a.y);
         ctx.lineTo(this.b.x, this.b.y);
         ctx.stroke();
+        this.update();
     };
 
     this.update = function () {
@@ -48,7 +47,6 @@ function Line(flag) {
             this.a.y += this.va;
             this.b.y += this.vb;
         }
-
         this.edges();
     };
 
@@ -69,29 +67,17 @@ function Line(flag) {
 
 }
 
-for (let i = 0; i < linesNum; i++) {
-    let flag = i % 2 === 0 ? "h" : "v";
-    let l = new Line(flag);
-    linesRy.push(l);
-}
-
 //刷新canvas
 function Draw() {
-    requestId = window.requestAnimationFrame(Draw);
     ctx.clearRect(0, 0, cw, ch);
 
-    for (let i = 0; i < linesRy.length; i++) {
-        let l = linesRy[i];
+    //遍历二维数组的两两组合
+    for (let l of linesRy) {    //卧槽.for in 默认i是字符串型.....// let i = parseInt(ii);
         l.draw();
-        l.update();
+        for (let j = linesRy.indexOf(l) + 1; j < linesRy.length; j++)
+            Intersect2lines(l, linesRy[j]);
     }
-    for (let i = 0; i < linesRy.length; i++) {
-        let l = linesRy[i];
-        for (let j = i + 1; j < linesRy.length; j++) {
-            let l1 = linesRy[j];
-            Intersect2lines(l, l1);
-        }
-    }
+    requestId = window.requestAnimationFrame(Draw);
 }
 
 function Init() {
@@ -154,3 +140,5 @@ canvas.addEventListener("wheel", (e) => {
     l = numOfL + '%';
     color = `hsl(${h},${s},${l})`;
 });
+
+console.log('试试鼠标和滚轮:D');
