@@ -8,6 +8,8 @@ let linesNum = 16;//线段总数
 let linesRy = [];//存储所有的线段
 let requestId = null;
 let color = "#ccc";
+let h, s, l = '50%', numOfL = 50;
+// let x,y;
 
 //line类
 function Line(flag) {
@@ -128,11 +130,7 @@ function Intersect2lines(l1, l2) {
     let ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
     let x = p1.x + ua * (p2.x - p1.x);
     let y = p1.y + ua * (p2.y - p1.y);
-    if (ua > 0 && ub > 0)
-        markPoint({
-            x: x,
-            y: y
-        });
+    if (ua > 0 && ub > 0) markPoint({x: x, y: y});
 }
 
 function markPoint(p) {
@@ -141,7 +139,16 @@ function markPoint(p) {
     ctx.fill();
 }
 
-//屏幕点击,随机换色~(最标准的做法还是通过计算十进制的rgb(,,)
-canvas.addEventListener("click",()=>{
-    color = '#' + parseInt(0xffffff * Math.random()).toString(16);
+window.addEventListener("mousemove", (e) => {
+    h = Math.floor((e.clientX / cw) * 360);
+    s = Math.floor((e.clientY / ch) * 101) + '%';
+    color = `hsl(${h},${s},${l})`;
+});
+
+//注意wheel和scroll事件的区别
+canvas.addEventListener("wheel", () => {
+    if (numOfL <= 0) numOfL = 101;
+    numOfL--;
+    l = numOfL + '%';
+    color = `hsl(${h},${s},${l})`;
 });
