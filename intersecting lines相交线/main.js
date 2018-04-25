@@ -146,9 +146,11 @@ window.addEventListener("mousemove", (e) => {
 });
 
 //注意wheel和scroll事件的区别
-canvas.addEventListener("wheel", () => {
-    if (numOfL <= 0) numOfL = 101;
-    numOfL--;
+canvas.addEventListener("wheel", (e) => {
+    // console.log(e.wheelDelta);
+    if (e.wheelDelta > 0 && numOfL > 0) numOfL--;
+    else if (e.wheelDelta < 0 && numOfL < 100) numOfL++;
+    else return;
     l = numOfL + '%';
     color = `hsl(${h},${s},${l})`;
 });
