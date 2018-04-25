@@ -3,10 +3,11 @@ let ctx = canvas.getContext("2d");
 let cw = canvas.width = window.innerWidth;
 let ch = canvas.height = window.innerHeight;
 
-ctx.fillStyle = "#000";
+//ctx.fillStyle = "#000";
 let linesNum = 16;//线段总数
 let linesRy = [];//存储所有的线段
 let requestId = null;
+let color = "#ccc";
 
 //line类
 function Line(flag) {
@@ -17,20 +18,20 @@ function Line(flag) {
     if (flag === "v") {//"v"代表大致上竖直的线
         this.a.y = 0;
         this.b.y = ch;
-        this.a.x = Math.random()*cw;
-        this.b.x = Math.random()*cw;
+        this.a.x = Math.random() * cw;
+        this.b.x = Math.random() * cw;
     } else if (flag === "h") {//"h"代表大致上水平的线
         this.a.x = 0;
         this.b.x = cw;
-        this.a.y = Math.random()*ch;
-        this.b.y = Math.random()*ch;
+        this.a.y = Math.random() * ch;
+        this.b.y = Math.random() * ch;
     }
     //速度/增量(px),(-1.5~1.5)
-    this.va = Math.random()*3-1.5;
-    this.vb = Math.random()*3-1.5;
+    this.va = Math.random() * 3 - 1.5;
+    this.vb = Math.random() * 3 - 1.5;
 
     this.draw = function () {
-        ctx.strokeStyle = "#ccc";
+        ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(this.a.x, this.a.y);
         ctx.lineTo(this.b.x, this.b.y);
@@ -56,7 +57,7 @@ function Line(flag) {
                 this.va *= -1;
             if (this.b.x < 0 || this.b.x > cw)
                 this.vb *= -1;
-        } else if (flag === "h") {
+        } else if (this.flag === "h") {
             if (this.a.y < 0 || this.a.y > ch)
                 this.va *= -1;
             if (this.b.y < 0 || this.b.y > ch)
@@ -72,6 +73,7 @@ for (let i = 0; i < linesNum; i++) {
     linesRy.push(l);
 }
 
+//刷新canvas
 function Draw() {
     requestId = window.requestAnimationFrame(Draw);
     ctx.clearRect(0, 0, cw, ch);
@@ -112,7 +114,6 @@ function Init() {
 
 setTimeout(function () {
     Init();
-
     addEventListener('resize', Init, false);
 }, 15);
 
@@ -121,6 +122,7 @@ function Intersect2lines(l1, l2) {
         p2 = l1.b,
         p3 = l2.a,
         p4 = l2.b;
+    //计算交点位置
     let denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
     let ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
     let ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
@@ -130,11 +132,16 @@ function Intersect2lines(l1, l2) {
         markPoint({
             x: x,
             y: y
-        })
+        });
 }
 
 function markPoint(p) {
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 1, 0, 2 * Math.PI);
+    ctx.arc(p.x, p.y, 1.5, 0, 2 * Math.PI);
     ctx.fill();
 }
+
+//屏幕点击,随机换色~(最标准的做法还是通过计算十进制的rgb(,,)
+canvas.addEventListener("click",()=>{
+    color = '#' + parseInt(0xffffff * Math.random()).toString(16);
+});
