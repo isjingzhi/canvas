@@ -17,17 +17,17 @@ function Line(flag) {
     if (flag === "v") {//"v"代表大致上竖直的线
         this.a.y = 0;
         this.b.y = ch;
-        this.a.x = randomIntFromInterval(0, ch);
-        this.b.x = randomIntFromInterval(0, ch);
+        this.a.x = Math.random()*cw;
+        this.b.x = Math.random()*cw;
     } else if (flag === "h") {//"h"代表大致上水平的线
         this.a.x = 0;
         this.b.x = cw;
-        this.a.y = randomIntFromInterval(0, cw);
-        this.b.y = randomIntFromInterval(0, cw);
+        this.a.y = Math.random()*ch;
+        this.b.y = Math.random()*ch;
     }
-    //速度/增量(px)
-    this.va = randomIntFromInterval(-125, 125) / 100;
-    this.vb = randomIntFromInterval(-125, 125) / 100;
+    //速度/增量(px),(-1.5~1.5)
+    this.va = Math.random()*3-1.5;
+    this.vb = Math.random()*3-1.5;
 
     this.draw = function () {
         ctx.strokeStyle = "#ccc";
@@ -126,20 +126,15 @@ function Intersect2lines(l1, l2) {
     let ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
     let x = p1.x + ua * (p2.x - p1.x);
     let y = p1.y + ua * (p2.y - p1.y);
-    if (ua > 0 && ub > 0) {
+    if (ua > 0 && ub > 0)
         markPoint({
             x: x,
             y: y
         })
-    }
 }
 
 function markPoint(p) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 1, 0, 2 * Math.PI);
     ctx.fill();
-}
-
-function randomIntFromInterval(mn, mx) {
-    return ~~(Math.random() * (mx - mn + 1) + mn);
 }
