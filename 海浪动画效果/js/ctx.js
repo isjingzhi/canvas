@@ -4,17 +4,8 @@ let diffPt = [];
 let autoDiff = 1000;
 let verNum = 250;
 let canvasW = window.innerWidth + 40;
-let addListener = function (e, str, func) {
-    if (e.addEventListener) {
-        e.addEventListener(str, func, false);
-    } else if (e.attachEvent) {
-        e.attachEvent("on" + str, func);
-    } else {
 
-    }
-};
-
-addListener(window, "load", init);
+addEventListener("load", init, false);
 
 function resize() {
     canvasW = document.getElementById('container').offsetWidth + 40;
@@ -24,46 +15,39 @@ function resize() {
     for (let i = 0; i < verNum; i++)
         vertexes[i] = new Vertex(cW / (verNum - 1) * i, cH / 2, cH / 2);
     initDiffPt();
-    let win_3 = window.innerWidth / 3;
-
+    // let win_3 = window.innerWidth / 3;
 }
 
 function init() {
     resize();
     let FPS = 30;
     let interval = 1000 / FPS >> 0;
-    let timer = setInterval(update, interval);
-    if (window.addEventListener) addListener(window, "DOMMouseScroll", wheelHandler);
-    addListener(window, "mousewheel", wheelHandler);
-    addListener(window, "resize", resize);
+    setInterval(update, interval);
+    addEventListener("DOMMouseScroll", wheelHandler, false);
+    addEventListener("mousewheel", wheelHandler);
+    addEventListener("resize", resize, false);
 
-    canvas.onmousedown = function (e) {
-        //div.innerHTML=e.clientX+":"+e.clientY;
-        //let mx = document.getElementById("mx");
-
-        //alert(1);
-        let mouseX, mouseY;
-        if (e) {
-            mouseX = e.pageX;
-            mouseY = e.pageY;
-        } else {
-            mouseX = event.x + document.body.scrollLeft;
-            mouseY = event.y + document.body.scrollTop;
-        }
-
-
-        if (window.innerHeight / 2 - mouseY < 50 && window.innerHeight / 2 - mouseY > -50)
-        //diffPt[150] = autoDiff;
-        {
-            autoDiff = 1000;
-            if (mouseX < canvas.width - 2) {
-                xx = 1 + Math.floor((verNum - 2) * mouseX / canvas.width);
-
-                diffPt[xx] = autoDiff;
+    canvas.addEventListener("mousedown",
+        (e) => {
+            let mouseX, mouseY;
+            if (e) {
+                mouseX = e.pageX;
+                mouseY = e.pageY;
+            } else {
+                mouseX = event.x + document.body.scrollLeft;
+                mouseY = event.y + document.body.scrollTop;
             }
 
-        }
-    }
+            if (window.innerHeight / 2 - mouseY < 50 && window.innerHeight / 2 - mouseY > -50) {
+                //diffPt[150] = autoDiff;
+                autoDiff = 1000;
+                if (mouseX < canvas.width - 2) {
+                    xx = 1 + Math.floor((verNum - 2) * mouseX / canvas.width);
+                    diffPt[xx] = autoDiff;
+                }
+
+            }
+        }, false);
 }
 
 let wheelHandler = function (e) {
@@ -101,12 +85,10 @@ function update() {
     }
 
     //更新点Y坐标
-    for (let i = 0; i < vertexes.length; i++) {
+    for (let i = 0; i < vertexes.length; i++)
         vertexes[i].updateY(diffPt[i]);
-    }
 
     draw();
-
 }
 
 let color1 = "";
@@ -138,10 +120,9 @@ function draw() {
     ctx.fillStyle = "#777";
     ctx.font = "12px sans-serif";
     ctx.textBaseline = "top";
-    ctx.fillText("点击该液体的表面", 70, canvas.height / 2 - 20);
+    ctx.fillText("点击水面产生波动", 70, canvas.height / 2 - 20);
     ctx.fillStyle = "#fff";
-    ctx.fillText("用鼠标滚轮来改变粘度", 70, canvas.height / 2 + 15);
-    ctx.fillText("滚轮改变粘稠度 / Viscosity: " + ((dd - 15) * 20 / 7).toFixed(2) + "%", 70, canvas.height - 20);
+    ctx.fillText(`滚轮调整粘度 / Viscosity: ${((dd - 15) * 20 / 7).toFixed(1)}%`, 70, canvas.height / 2 + 15);
 }
 
 function initCanvas(width, height) {
@@ -157,8 +138,8 @@ function Vertex(x, y, baseY) {
     this.y = y;
     this.vy = 0;
     this.targetY = 0;
-    this.friction = 0.15;
-    this.deceleration = 0.95;
+    this.friction = .15;
+    this.deceleration = .95;
 }
 
 Vertex.prototype.updateY = function (diffVal) {
@@ -173,5 +154,5 @@ let changeColor = function (value) {
     color2 = value;
 };
 
-color.value="#0000ff";
+color.value = "#0000ff";
 changeColor("#0000ff");
