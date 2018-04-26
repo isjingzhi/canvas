@@ -2,6 +2,8 @@
 let can = document.getElementById("canvas");
 let ctx = can.getContext('2d');
 
+let numOfColors = 10;
+
 function resize() {
     can.width = window.innerWidth;
     can.height = window.innerHeight;
@@ -81,7 +83,13 @@ class Particle {
 }
 
 let particles = [];
-let colors = ["#bf1337", "#f3f1f3", "#084c8d", "#f2d108", "#efd282"];
+// let colors = ["#bf1337", "#f3f1f3", "#084c8d", "#f2d108", "#efd282"];
+let colors = [];
+for(let i =0;i<numOfColors;i++){
+    let ran0x =parseInt(0xffffff * Math.random()).toString(16);
+    colors.push('#' + (ran0x+"000000").slice(0,6));
+}
+
 let bool = true;
 
 function changeText(text) {
