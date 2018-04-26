@@ -10,17 +10,18 @@ let h, s, l = '50%', numOfL = 50;
 ctx.fillStyle = "#000";//相交点
 
 //line类
-function Line(flag) {
-    this.flag = flag;
+function Line(f) {
+    this.flag = f;
     //线段的两个端点都在窗口边框上
     this.a = {};//起点
     this.b = {};//终点
-    if (flag === "v") {//"v"代表大致上竖直的线
+
+    if (this.flag === "v") {//"v"代表大致上竖直的线
         this.a.y = 0;
         this.b.y = ch;
         this.a.x = Math.random() * cw;
         this.b.x = Math.random() * cw;
-    } else if (flag === "h") {//"h"代表大致上水平的线
+    } else if (this.flag === "h") {//"h"代表大致上水平的线
         this.a.x = 0;
         this.b.x = cw;
         this.a.y = Math.random() * ch;
@@ -30,7 +31,8 @@ function Line(flag) {
     this.va = Math.random() * 3 - 1.5;
     this.vb = Math.random() * 3 - 1.5;
 
-    this.draw = function () {
+    //draw()-->update()-->edges()
+    this.draw = () => {
         ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(this.a.x, this.a.y);
@@ -39,11 +41,12 @@ function Line(flag) {
         this.update();
     };
 
-    this.update = function () {
+    //端点坐标更新
+    this.update = () => {
         if (this.flag === "v") {
             this.a.x += this.va;
             this.b.x += this.vb;
-        } else if (flag === "h") {
+        } else if (this.flag === "h") {
             this.a.y += this.va;
             this.b.y += this.vb;
         }
@@ -51,7 +54,7 @@ function Line(flag) {
     };
 
     //判断线条移动到边界时
-    this.edges = function () {
+    this.edges = () => {
         if (this.flag === "v") {
             if (this.a.x < 0 || this.a.x > cw)
                 this.va *= -1;
@@ -100,17 +103,14 @@ function Init() {
     Draw();
 }
 
-setTimeout(function () {
+setTimeout(() => {
     Init();
     addEventListener('resize', Init, false);
 }, 15);
 
 function Intersect2lines(l1, l2) {
-    let p1 = l1.a,
-        p2 = l1.b,
-        p3 = l2.a,
-        p4 = l2.b;
-    //计算交点位置
+    let [p1, p2, p3, p4] = [l1.a, l1.b, l2.a, l2.b];
+    //计算交点位置公式
     let denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
     let ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
     let ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
@@ -121,7 +121,7 @@ function Intersect2lines(l1, l2) {
 
 function markPoint(p) {
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 1.5, 0, 2 * Math.PI);
+    ctx.arc(p.x, p.y, 2, 0, 2 * Math.PI);
     ctx.fill();
 }
 
