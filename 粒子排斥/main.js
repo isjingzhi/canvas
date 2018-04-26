@@ -145,5 +145,4 @@ function draw() {
 }
 
 changeText();
-// setInterval(draw, 1);
 draw();
