@@ -1,6 +1,5 @@
 /*jshint esversion:6*/
-let can = document.createElement("canvas");
-document.body.appendChild(can);
+let can = document.getElementById("canvas");
 let ctx = can.getContext('2d');
 
 function resize() {
@@ -8,12 +7,13 @@ function resize() {
     can.height = window.innerHeight;
 }
 
+//闪烁粒子的半径
 const max_radius = 3;
 const min_radius = 1;
 const drag = 50;
 window.onresize = resize;
 
-function cfill() {
+function clear() {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, can.width, can.height);
     ctx.fill();
@@ -33,25 +33,27 @@ can.ontouchmove = function (e) {
 };
 
 resize();
-cfill();
-
-let distance = (x, y, x1, y1) => Math.sqrt((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y));
+clear();
+//两点间距
+let distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 
 class Particle {
+    //额,成员变量直接放在构造函数中写
     constructor(pos, target, vel, color, radius) {
         this.pos = pos;
         this.target = target;
         this.vel = vel;
         this.color = color;
         this.radius = radius;
-        let arr = [-1, 1];
-        this.direction = arr[~~(Math.random() * 2)] * Math.random() / 10;
+        //半径的增量(影响速度)
+        this.direction = [-1, 1][~~(Math.random() * 2)] * Math.random() / 2;   //~~运算符向下取整..
     }
 
     set(type, value) {
         this[type] = value;
     }
 
+    //update()-->draw()
     update() {
         this.radius += this.direction;
         this.vel.x = (this.pos.x - this.target.x) / drag;
@@ -63,7 +65,7 @@ class Particle {
         if (this.radius >= max_radius)
             this.direction *= -1;
 
-        if (this.radius <= 1)
+        if (this.radius <= min_radius)
             this.direction *= -1;
 
         this.pos.x -= this.vel.x;
@@ -81,32 +83,31 @@ class Particle {
 let particles = [];
 let colors = ["#bf1337", "#f3f1f3", "#084c8d", "#f2d108", "#efd282"];
 let bool = true;
-let i;
 
 function changeText(text) {
     let current = 0, temp, radius, color;
-    cfill();
+    clear();
     ctx.fillStyle = "#fff";
     ctx.font = "120px Times";
     ctx.fillText(text, can.width * 0.5 - ctx.measureText(text).width * 0.5, can.height * 0.5 + 60);
     let data = ctx.getImageData(0, 0, can.width, can.height).data;
-    cfill();
-    for (i = 0; i < data.length; i += 8) {
+    clear();
+    for (let i = 0; i < data.length; i += 8) {
         temp = {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)};
-        if (data[i] !== 0 && ~~(Math.random() * 5) === 1/*(temp.x % (max_radius+1) === 0 && temp.y % (max_radius+1) === 0)*/) {
+        /*(temp.x % (max_radius+1) === 0 && temp.y % (max_radius+1) === 0)*/
+        if (data[i] !== 0 && ~~(Math.random() * 5) === 1) {
             if (data[i + 4] !== 255 || data[i - 4] !== 255 || data[i + can.width * 4] !== 255 || data[i - can.width * 4] !== 255) {
-                if (current < particles.length) {
+                if (current < particles.length)
                     particles[current].set("target", temp);
-                } else {
+                else {
                     radius = max_radius - Math.random() * min_radius;
                     temp = {x: Math.random() * can.width, y: Math.random() * can.height};
-                    if (bool) {
-                        temp = {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)};
-                    }
+                    if (bool) temp = {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)};
                     color = colors[~~(Math.random() * colors.length)];
                     let p = new Particle(
                         temp,
-                        {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)}, {x: 0, y: 0},
+                        {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)},
+                        {x: 0, y: 0},
                         color,
                         radius);
                     particles.push(p);
@@ -120,12 +121,14 @@ function changeText(text) {
 }
 
 function draw() {
-    cfill();
-    for (i = 0; i < particles.length; ++i) {
-        particles[i].update();
-        particles[i].draw();
+    clear();
+    for (let p of particles) {
+        p.update();
+        p.draw();
     }
+    window.requestAnimationFrame(draw);
 }
 
 changeText("Hello ES6 !");
-setInterval(draw, 1);
+// setInterval(draw, 1);
+draw();
