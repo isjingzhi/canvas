@@ -51,10 +51,11 @@
 <body>
 <div id="controller">
     <!--想要跳过前一个默认参数调用函数,得通过undefined对象!!-->
-    <label for="text">text:</label><input class="controls" type="text" value="Hello ES6 !" id="text"
-                                          onchange="changeText(this.value)">
-    <label for="fontSize">size:</label><input class="controls" id="fontSize" value="120" type="number"
-                                              onchange="changeText(undefined,this.value)">
+    <label for="text">text:</label>
+    <input class="controls" type="text" value="Hello ES6 !" id="text" onchange="changeText(this.value)">
+    <label for="fontSize">size:</label>
+    <input class="controls" id="fontSize" value="120" type="number" onchange="changeText(undefined,this.value)"
+           min="100" max="1000">
     <label for="fontFamily">font:</label>
     <select id="fontFamily" class="controls" onchange="changeText(undefined,undefined,this.value)" value="serif">
         <option value="serif">Serif</option>
@@ -63,8 +64,7 @@
         <option value="fantasy">Fantasy</option>
         <option value="monospace">Monospace</option>
     </select>
-    <!--dom预处理:可以直接通过id选择器代表元素对象-->
-    <!--<button onclick="changeText(t.value)">change</button>-->
+    <!--dom预处理:可以直接通过id选择器(对象)代表元素对象-->
 </div>
 
 <canvas id="canvas"></canvas>
