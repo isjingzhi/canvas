@@ -2,6 +2,10 @@
 let can = document.getElementById("canvas");
 let ctx = can.getContext('2d');
 
+let text = document.querySelector('#text');
+let fontSize = document.querySelector('#fontSize');
+let fontFamily = document.querySelector('#fontFamily');
+
 let numOfColors = 10;
 
 function resize() {
@@ -92,12 +96,12 @@ for(let i =0;i<numOfColors;i++){
 
 let bool = true;
 
-function changeText(text) {
+function changeText(theText=text.value,theFontSize=fontSize.value,theFontFamily=fontFamily.value) {
     let current = 0, temp, radius, color;
     clear();
     ctx.fillStyle = "#fff";
-    ctx.font = "120px Times";
-    ctx.fillText(text, can.width * 0.5 - ctx.measureText(text).width * 0.5, can.height * 0.5 + 60);
+    ctx.font = `${theFontSize}px ${theFontFamily}`;
+    ctx.fillText(theText, can.width * 0.5 - ctx.measureText(theText).width * 0.5, can.height * 0.5 + 60);
     let data = ctx.getImageData(0, 0, can.width, can.height).data;
     clear();
     for (let i = 0; i < data.length; i += 8) {
@@ -111,7 +115,7 @@ function changeText(text) {
                     radius = max_radius - Math.random() * min_radius;
                     temp = {x: Math.random() * can.width, y: Math.random() * can.height};
                     if (bool) temp = {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)};
-                    color = colors[~~(Math.random() * colors.length)];
+                    color = colors[~~(Math.random() * numOfColors)];
                     let p = new Particle(
                         temp,
                         {x: (i / 4) % can.width, y: ~~((i / 4) / can.width)},
@@ -137,6 +141,6 @@ function draw() {
     window.requestAnimationFrame(draw);
 }
 
-changeText("Hello ES6 !");
+changeText();
 // setInterval(draw, 1);
 draw();

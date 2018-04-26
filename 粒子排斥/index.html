@@ -15,29 +15,54 @@
             width: 100%;
         }
 
-        .control {
-            position: absolute;
+        #controller {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            left: 0;
+            top: 0;
         }
 
-        .control #t {
+        .controls {
+            display: inline-block;
             border: 0;
             margin: 0;
-            padding: 15px;
+            /*padding: 15px;*/
             outline: none;
             text-align: center;
+            height: 50px;
+            width: 150px;
         }
 
-        .control label {
-            padding: 15px;
+        label {
+            display: inline-block;
+            padding: 16px;
             background: #333;
+            outline: none;
             color: #fff;
+            text-align: center;
+            height: 20px;
+            width: 70px;
         }
 
     </style>
 </head>
 <body>
-<div class="control">
-    <label for="t">text:</label><input type="text" value="Hello ES6 !" id="t" onchange="changeText(this.value)">
+<div id="controller">
+    <!--想要跳过前一个默认参数调用函数,得通过undefined对象!!-->
+    <label for="text">text:</label><input class="controls" type="text" value="Hello ES6 !" id="text"
+                                          onchange="changeText(this.value)">
+    <label for="fontSize">size:</label><input class="controls" id="fontSize" value="120" type="number"
+                                              onchange="changeText(undefined,this.value)">
+    <label for="fontFamily">font:</label>
+    <select id="fontFamily" class="controls" onchange="changeText(undefined,undefined,this.value)" value="serif">
+        <option value="serif">Serif</option>
+        <option value="sans-serif">Sans-Serif</option>
+        <option value="cursive">Cursive</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="monospace">Monospace</option>
+    </select>
     <!--dom预处理:可以直接通过id选择器代表元素对象-->
     <!--<button onclick="changeText(t.value)">change</button>-->
 </div>
