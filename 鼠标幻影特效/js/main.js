@@ -8,25 +8,25 @@ let opacityDelta = -.03;   //opacity增量
 let color;      //瞬时颜色
 let hue = Math.random() * 360;
 let hueDelta = [-.2, .2][~~(Math.random() * 2)];    //hue增量
+let shape = 'square';
+let isHollow = true;
 
 (window.onresize = () => {
-    w = window.innerWidth;
-    h = window.innerHeight;
-    c.width = w;
-    c.height = h;
+    c.width = w = window.innerWidth;
+    c.height = h = window.innerHeight;
 })();
 
 class particle {
     constructor(xx, yy) {
         this.x = xx;    //坐标
         this.y = yy;
-        this.r = .1;    //半径
+        this.r = .1;    //半径/边长的一半
         this.o = 1;     //alpha
     }
 }
 
 c.onmousemove = (e) => {
-    particles.unshift(new particle(e.clientX, e.clientY));
+    particles.unshift(new particle(e.clientX, e.clientY));  //push()
 };
 
 (function begin() {
@@ -37,13 +37,21 @@ c.onmousemove = (e) => {
     ctx.fillRect(0, 0, w, h);
     for (let p of particles) {
         ctx.globalAlpha = p.o;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.closePath();
+        // ctx.beginPath();
+        // ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        // ctx.closePath();
+        // ctx.fillStyle = color;
+        // ctx.fill();
+
+        // ctx.strokeStyle=color;
+        // ctx.strokeRect(p.x-p.r, p.y-p.r, p.r * 2, p.r * 2);
+
+        ctx.fillStyle = color;
+        ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+
         // ctx.strokeStyle=color;
         // ctx.stroke();
-        ctx.fillStyle = color;
-        ctx.fill();
+
         p.r += radiusDelta;
         p.o += opacityDelta;
     }
@@ -51,4 +59,3 @@ c.onmousemove = (e) => {
     particles = particles.filter((p) => p.o > 0);   //map和filter并不改变原数组
     window.requestAnimationFrame(begin);
 })();
-// begin();
