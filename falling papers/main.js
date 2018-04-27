@@ -24,8 +24,8 @@ function _classCallCheck(instance, Constructor) {
     }
 }
 
-let Progress = function () {
-    function Progress() {
+let Progress = class {
+    constructor() {
         let param = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
         _classCallCheck(this, Progress);
@@ -40,15 +40,15 @@ let Progress = function () {
         this.reset();
     }
 
-    Progress.prototype.reset = function reset() {
+    reset() {
         this.timestamp = null;
     };
 
-    Progress.prototype.start = function start(now) {
+    start(now) {
         this.timestamp = now;
     };
 
-    Progress.prototype.tick = function tick(now) {
+    tick(now) {
         if (this.timestamp) {
             this.delta = now - this.timestamp;
             this.progress = Math.min(this.delta / this.duration, 1);
@@ -59,21 +59,20 @@ let Progress = function () {
             return this.progress;
         } else return 0;
     };
+};
 
-    _createClass(Progress, null, [{
-        key: "CONST",
-        get: function get() {
-            return {
-                DURATION: 1000
-            };
-        }
-    }]);
+_createClass(Progress, null, [{
+    key: "CONST",
+    get: function get() {
+        return {
+            DURATION: 1000
+        };
+    }
+}]);
 
-    return Progress;
-}();
 
-let Confetti = function () {
-    function Confetti(param) {
+let Confetti = class {
+    constructor(param) {
         _classCallCheck(this, Confetti);
 
         this.parent = param.elm || document.body;
@@ -103,7 +102,7 @@ let Confetti = function () {
         requestAnimationFrame(this.render);
     }
 
-    Confetti.prototype.build = function build() {
+    build() {
         for (let i = 0; i < this.length; ++i) {
             let canvas = document.createElement("canvas"),
                 ctx = canvas.getContext("2d");
@@ -128,7 +127,7 @@ let Confetti = function () {
         }
     };
 
-    Confetti.prototype.render = function render(now) {
+    render(now) {
         let progress = this.progress.tick(now);
 
         this.canvas.width = this.width;
@@ -144,25 +143,23 @@ let Confetti = function () {
 
         requestAnimationFrame(this.render);
     };
+};
+_createClass(Confetti, null, [{
+    key: "CONST",
+    get: function get() {
+        return {
+            SPRITE_WIDTH: 9,
+            SPRITE_HEIGHT: 16,
+            PAPER_LENGTH: 100,
+            DURATION: 8000,
+            ROTATION_RATE: 50,
+            COLORS: ["#EF5350", "#EC407A", "#AB47BC", "#7E57C2", "#5C6BC0", "#42A5F5", "#29B6F6", "#26C6DA", "#26A69A", "#66BB6A", "#9CCC65", "#D4E157", "#FFEE58", "#FFCA28", "#FFA726", "#FF7043", "#8D6E63", "#BDBDBD", "#78909C"]
+        };
+    }
+}]);
 
-    _createClass(Confetti, null, [{
-        key: "CONST",
-        get: function get() {
-            return {
-                SPRITE_WIDTH: 9,
-                SPRITE_HEIGHT: 16,
-                PAPER_LENGTH: 100,
-                DURATION: 8000,
-                ROTATION_RATE: 50,
-                COLORS: ["#EF5350", "#EC407A", "#AB47BC", "#7E57C2", "#5C6BC0", "#42A5F5", "#29B6F6", "#26C6DA", "#26A69A", "#66BB6A", "#9CCC65", "#D4E157", "#FFEE58", "#FFCA28", "#FFA726", "#FF7043", "#8D6E63", "#BDBDBD", "#78909C"]
-            };
-        }
-    }]);
 
-    return Confetti;
-}();
-
-(function () {
+(() => {
     let DURATION = 8000,
         LENGTH = 120;
 
