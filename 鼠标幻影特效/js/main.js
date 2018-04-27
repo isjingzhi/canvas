@@ -7,38 +7,14 @@ let radiusDelta = .9;     //radius增量
 let opacityDelta = -.03;   //opacity增量
 let color;      //瞬时颜色
 let hue = Math.random() * 360;
-let hueDelta = .2;    //hue增量
+let hueDelta = [-.2, .2][~~(Math.random() * 2)];    //hue增量
 
-window.onresize = resize;
-resize();
-
-function begin() {
-    hue += hueDelta;
-    color = `hsl(${hue},100%,80%)`;
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, w, h);
-    for (let p of particles) {
-        ctx.globalAlpha = p.o;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
-        p.r += radiusDelta;
-        p.o += opacityDelta;
-    }
-    //过滤掉opacity<=0的
-    particles = particles.filter((p) => p.o > 0);   //map和filter并不改变原数组
-    window.requestAnimationFrame(begin);
-}
-
-function resize() {
+(window.onresize = () => {
     w = window.innerWidth;
     h = window.innerHeight;
     c.width = w;
     c.height = h;
-}
+})();
 
 class particle {
     constructor(xx, yy) {
@@ -53,4 +29,26 @@ c.onmousemove = (e) => {
     particles.unshift(new particle(e.clientX, e.clientY));
 };
 
-begin();
+(function begin() {
+    hue += hueDelta;
+    color = `hsl(${hue},100%,80%)`;
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, w, h);
+    for (let p of particles) {
+        ctx.globalAlpha = p.o;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.closePath();
+        // ctx.strokeStyle=color;
+        // ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.fill();
+        p.r += radiusDelta;
+        p.o += opacityDelta;
+    }
+    //过滤掉opacity<=0的
+    particles = particles.filter((p) => p.o > 0);   //map和filter并不改变原数组
+    window.requestAnimationFrame(begin);
+})();
+// begin();
