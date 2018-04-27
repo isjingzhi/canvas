@@ -1,21 +1,11 @@
 let c = document.getElementById("c");
 let ctx = c.getContext("2d");
-let w, h, cx, cy, l;
+let w, h;   //窗口/画布的宽高
 let particles = [];     //存放所有粒子
-let b = {
-    // n: 100,
-    // a: 1,
-    // s: 20,
-};
 let bgColor = '#000';  //背景颜色
 let radiusDelta = .9;     //radius增量
 let opacityDelta = -.03;   //opacity增量
-// let bx = 0, by = 0;
-// vx = 0, vy = 0;
-// let td = 0;
-// let p = 0;
-// let hs = 0;
-let color;
+let color;      //瞬时颜色
 let hue = Math.random() * 360;
 let hueDelta = .2;    //hue增量
 
@@ -48,21 +38,19 @@ function resize() {
     h = window.innerHeight;
     c.width = w;
     c.height = h;
-    cx = w / 2;
-    cy = h / 2;
 }
 
-c.onmousemove = function (e) {
-    cx = e.clientX - c.offsetLeft;
-    cy = e.clientY - c.offsetTop;
+class particle {
+    constructor(xx, yy) {
+        this.x = xx;    //坐标
+        this.y = yy;
+        this.r = .1;    //半径
+        this.o = 1;     //alpha
+    }
+}
 
-    particles.push({
-        x: cx,
-        y: cy,
-        r: .1,
-        o: 1,
-        // v: 0
-    });
+c.onmousemove = (e) => {
+    particles.unshift(new particle(e.clientX, e.clientY));
 };
 
 begin();
