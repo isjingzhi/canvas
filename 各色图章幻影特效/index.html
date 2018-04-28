@@ -9,7 +9,6 @@
         }
 
         body {
-            /*position: relative;*/
             /*width: 100%;*/
             /*height: 100%;*/
             overflow: hidden;
@@ -28,7 +27,7 @@
             border: 1px solid white;
         }
 
-        button:hover {
+        .active, button:hover {
             color: #fff;
             background: #000;
         }
@@ -42,7 +41,8 @@
             width: 100%;
             height: 100%;
         }
-        #down-left{
+
+        #down-left {
             display: flex;
             position: fixed;
             left: 0;
@@ -52,7 +52,8 @@
             justify-content: flex-end;
             align-items: flex-start;
         }
-        #top-left{
+
+        #top-left {
             padding: 10px;
         }
 
@@ -63,17 +64,21 @@
 
 <body>
 <div id="top-left">
-    <button id="btn4" onclick="shape='square'">方块</button>
-    <button id="btn3" onclick="shape='circle'">圆形</button>
-    <button id="btn5" onclick="shape='cross'">十字</button>
-    <button id="btn6" onclick="shape='concave'">凹菱</button>
-
+    <!--使用button的value-->
+    <button value="square" class="active">方块</button>
+    <button value="circle">圆形</button>
+    <button value="cross">十字</button>
+    <button value="concave">凹菱</button>
+    <button value="flower">梅花</button>
+    <button value="star">星星</button>
 </div>
 
 <div id="down-left">
-    <button id="btn1" onclick="isHollow=true">空心</button>
-    <button id="btn2" onclick="isHollow=false">实心</button>
+    <!--注意,html中写onclick中的内容是函数体内部的内容,而参数event是放在外层函数中的-->
+    <button onclick="toggleHollow()" class="active">空心</button>
+    <button onclick="toggleHollow()">实心</button>
 </div>
+
 <canvas id="c"></canvas>
 
 <script type="text/javascript" src="js/main.js"></script>

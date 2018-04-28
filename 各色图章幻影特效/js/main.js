@@ -10,13 +10,15 @@ let hue = Math.random() * 360;
 let hueDelta = [-.2, .2][~~(Math.random() * 2)];    //hue增量
 let shape = 'square';
 let isHollow = true;
+let rt2 = Math.sqrt(2);
+let d45 = Math.PI / 4;
 
 (window.onresize = () => {
     c.width = w = window.innerWidth;
     c.height = h = window.innerHeight;
 })();
 
-class particle {
+class Particle {
     constructor(xx, yy) {
         this.x = xx;    //坐标
         this.y = yy;
@@ -26,7 +28,7 @@ class particle {
 }
 
 c.onmousemove = (e) => {
-    particles.unshift(new particle(e.clientX, e.clientY));  //push()
+    particles.unshift(new Particle(e.clientX, e.clientY));  //push()
 };
 
 (function begin() {
@@ -66,13 +68,40 @@ c.onmousemove = (e) => {
                 break;
             }
             case 'concave': {
-                let R = r * Math.sqrt(2);
-                let d45 = Math.PI / 4;
+                let R = r * rt2, r2 = r * 2;
                 ctx.beginPath();
-                ctx.arc(x - r - r, y, R, -d45, d45);
-                ctx.arc(x, y + r + r, R, -3 * d45, -d45);
-                ctx.arc(x + r + r, y, R, 3 * d45, 5 * d45);
-                ctx.arc(x, y - r - r, R, d45, 3 * d45);
+                ctx.arc(x - r2, y, R, -d45, d45);
+                ctx.arc(x, y + r2, R, -3 * d45, -d45);
+                ctx.arc(x + r2, y, R, 3 * d45, 5 * d45);
+                ctx.arc(x, y - r2, R, d45, 3 * d45);
+                ctx.closePath();
+                if (isHollow) ctx.stroke();
+                else ctx.fill();
+                break;
+            }
+            case 'flower': {
+                let R = r / rt2, rr = r / 2;
+                ctx.beginPath();
+                ctx.arc(x + rr, y - rr, R, -3 * d45, d45);
+                ctx.arc(x + rr, y + rr, R, -d45, 3 * d45);
+                ctx.arc(x - rr, y + rr, R, d45, 5 * d45);
+                ctx.arc(x - rr, y - rr, R, 3 * d45, 7 * d45);
+                ctx.closePath();
+                if (isHollow) ctx.stroke();
+                else ctx.fill();
+                break;
+            }
+            case 'star': {
+                let R = r / 2;
+                ctx.beginPath();
+                ctx.moveTo(x, y - R * 3);
+                ctx.lineTo(x + R, y - R);
+                ctx.lineTo(x + R * 3, y);
+                ctx.lineTo(x + R, y + R);
+                ctx.lineTo(x, y + R * 3);
+                ctx.lineTo(x - R, y + R);
+                ctx.lineTo(x - R * 3, y);
+                ctx.lineTo(x - R, y - R);
                 ctx.closePath();
                 if (isHollow) ctx.stroke();
                 else ctx.fill();
@@ -89,3 +118,18 @@ c.onmousemove = (e) => {
     particles = particles.filter((p) => p.o > 0);   //map和filter并不改变原数组
     window.requestAnimationFrame(begin);
 })();
+
+document.querySelectorAll('#top-left button').forEach((item) => {
+    item.addEventListener("click", () => {
+        shape = item.value;   //利用闭包
+        document.querySelector('#top-left .active').classList.remove('active');
+        item.classList.add('active');
+    })
+});
+let toggleHollow = () => {
+    if (!event.target.classList.contains('active')) {
+        document.querySelector('#down-left .active').classList.remove('active');
+        event.target.classList.add('active');
+        isHollow = !isHollow;
+    }
+};
