@@ -28,8 +28,80 @@ class Particle {
 }
 
 c.onmousemove = (e) => {
-    particles.unshift(new Particle(e.clientX, e.clientY));  //push()
+    particles.unshift(new Particle(e.clientX, e.clientY));  //和push()效果一样...
 };
+
+let draw = ({x, y, r, o}) => {   //参数解构
+    switch (shape) {
+        case 'square': {
+            if (isHollow) ctx.strokeRect(x - r, y - r, r * 2, r * 2);
+            else ctx.fillRect(x - r, y - r, r * 2, r * 2);
+            break;
+        }
+        case 'circle': {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.closePath();
+            if (isHollow) ctx.stroke();
+            else ctx.fill();
+            break;
+        }
+        case 'cross': {
+            r *= 1.2;
+            if (isHollow) {
+                ctx.strokeRect(x - r, y - r / 6, r * 2, r / 3);
+                ctx.strokeRect(x - r / 6, y - r, r / 3, r * 2);
+            } else {
+                ctx.fillRect(x - r, y - r / 6, r * 2, r / 3);
+                ctx.fillRect(x - r / 6, y - r, r / 3, r * 2);
+            }
+            break;
+        }
+        case 'concave': {
+            let R = r * rt2, r2 = r * 2;
+            ctx.beginPath();
+            ctx.arc(x - r2, y, R, -d45, d45);
+            ctx.arc(x, y + r2, R, -3 * d45, -d45);
+            ctx.arc(x + r2, y, R, 3 * d45, 5 * d45);
+            ctx.arc(x, y - r2, R, d45, 3 * d45);
+            ctx.closePath();
+            if (isHollow) ctx.stroke();
+            else ctx.fill();
+            break;
+        }
+        case 'flower': {
+            let R = r / rt2, rr = r / 2;
+            ctx.beginPath();
+            ctx.arc(x + rr, y - rr, R, -3 * d45, d45);
+            ctx.arc(x + rr, y + rr, R, -d45, 3 * d45);
+            ctx.arc(x - rr, y + rr, R, d45, 5 * d45);
+            ctx.arc(x - rr, y - rr, R, 3 * d45, 7 * d45);
+            ctx.closePath();
+            if (isHollow) ctx.stroke();
+            else ctx.fill();
+            break;
+        }
+        case 'star': {
+            let R = r / 2;
+            ctx.beginPath();
+            ctx.moveTo(x, y - R * 3);
+            ctx.lineTo(x + R, y - R);
+            ctx.lineTo(x + R * 3, y);
+            ctx.lineTo(x + R, y + R);
+            ctx.lineTo(x, y + R * 3);
+            ctx.lineTo(x - R, y + R);
+            ctx.lineTo(x - R * 3, y);
+            ctx.lineTo(x - R, y - R);
+            ctx.closePath();
+            if (isHollow) ctx.stroke();
+            else ctx.fill();
+            break;
+        }
+        default:
+            break;
+    }
+};
+
 
 (function begin() {
     hue += hueDelta;
@@ -38,79 +110,11 @@ c.onmousemove = (e) => {
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, w, h);
     for (let p of particles) {
-        let {x, y, r, o} = p;
-        ctx.globalAlpha = o;
+        ctx.globalAlpha = p.o;
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
-        switch (shape) {
-            case 'square': {
-                if (isHollow) ctx.strokeRect(x - r, y - r, r * 2, r * 2);
-                else ctx.fillRect(x - r, y - r, r * 2, r * 2);
-                break;
-            }
-            case 'circle': {
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.closePath();
-                if (isHollow) ctx.stroke();
-                else ctx.fill();
-                break;
-            }
-            case 'cross': {
-                r *= 1.2;
-                if (isHollow) {
-                    ctx.strokeRect(x - r, y - r / 6, r * 2, r / 3);
-                    ctx.strokeRect(x - r / 6, y - r, r / 3, r * 2);
-                } else {
-                    ctx.fillRect(x - r, y - r / 6, r * 2, r / 3);
-                    ctx.fillRect(x - r / 6, y - r, r / 3, r * 2);
-                }
-                break;
-            }
-            case 'concave': {
-                let R = r * rt2, r2 = r * 2;
-                ctx.beginPath();
-                ctx.arc(x - r2, y, R, -d45, d45);
-                ctx.arc(x, y + r2, R, -3 * d45, -d45);
-                ctx.arc(x + r2, y, R, 3 * d45, 5 * d45);
-                ctx.arc(x, y - r2, R, d45, 3 * d45);
-                ctx.closePath();
-                if (isHollow) ctx.stroke();
-                else ctx.fill();
-                break;
-            }
-            case 'flower': {
-                let R = r / rt2, rr = r / 2;
-                ctx.beginPath();
-                ctx.arc(x + rr, y - rr, R, -3 * d45, d45);
-                ctx.arc(x + rr, y + rr, R, -d45, 3 * d45);
-                ctx.arc(x - rr, y + rr, R, d45, 5 * d45);
-                ctx.arc(x - rr, y - rr, R, 3 * d45, 7 * d45);
-                ctx.closePath();
-                if (isHollow) ctx.stroke();
-                else ctx.fill();
-                break;
-            }
-            case 'star': {
-                let R = r / 2;
-                ctx.beginPath();
-                ctx.moveTo(x, y - R * 3);
-                ctx.lineTo(x + R, y - R);
-                ctx.lineTo(x + R * 3, y);
-                ctx.lineTo(x + R, y + R);
-                ctx.lineTo(x, y + R * 3);
-                ctx.lineTo(x - R, y + R);
-                ctx.lineTo(x - R * 3, y);
-                ctx.lineTo(x - R, y - R);
-                ctx.closePath();
-                if (isHollow) ctx.stroke();
-                else ctx.fill();
-                break;
-            }
-            default:
-                break;
-        }
-        //逐帧更新
+        draw(p);
+        //逐帧更新  //基础数据类型是完全拷贝的,不能直接用解构后的变量
         p.r += radiusDelta;
         p.o += opacityDelta;
     }
