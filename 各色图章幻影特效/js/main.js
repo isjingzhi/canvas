@@ -8,7 +8,7 @@ let opacityDelta = -.03;   //opacity增量
 let color;      //瞬时颜色
 let hue = Math.random() * 360;
 let hueDelta = [-.2, .2][~~(Math.random() * 2)];    //hue增量
-let shape = 'square';
+let shape = 'square';   //图案的形状
 let isHollow = true;
 let rt2 = Math.sqrt(2);
 let d45 = Math.PI / 4;
@@ -127,7 +127,7 @@ document.querySelectorAll('#top-left button').forEach((item) => {
     })
 });
 let toggleHollow = () => {
-    if (!event.target.classList.contains('active')) {
+    if (!event.target.classList.contains('active')) {   //event可以在onclick方法作用域中使用
         document.querySelector('#down-left .active').classList.remove('active');
         event.target.classList.add('active');
         isHollow = !isHollow;
