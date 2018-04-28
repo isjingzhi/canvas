@@ -18,6 +18,13 @@ function mouseUp(event) {
     mouse.down = false;
 }
 
+function mouseDown(event) {
+    mouse.down = true;
+    position.x = event.pageX;
+    position.y = event.pageY;
+    // document.getElementById("info")
+}
+
 function draw() {
     if (mouse.down) {
         const letter = letters[counter];
@@ -46,12 +53,6 @@ function draw() {
     }
 }
 
-function mouseDown(event) {
-    mouse.down = true;
-    position.x = event.pageX;
-    position.y = event.pageY;
-    // document.getElementById("info")
-}
 
 //决定绘制文本字体大小
 //当鼠标按下时，获得鼠标移动前的x,y坐标，传入pt中
