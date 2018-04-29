@@ -1,17 +1,20 @@
-const Vector = function (x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
-};
-Vector.prototype = {
-    add: function (v) {
+class Vector {
+    constructor(x, y) {
+        this.x = x || 0;
+        this.y = y || 0;
+    };
+
+    add(v) {
         this.x += v.x;
         this.y += v.y;
         return this;
-    },
-    length: function () {
+    }
+
+    length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
-    },
-    rotate: function (theta) {
+    }
+
+    rotate(theta) {
         const x = this.x;
         const y = this.y;
         this.x = Math.cos(theta) * this.x - Math.sin(theta) * this.y;
@@ -19,13 +22,14 @@ Vector.prototype = {
         //this.x = Math.cos(theta) * x - Math.sin(theta) * y;
         //this.y = Math.sin(theta) * x + Math.cos(theta) * y;
         return this;
-    },
-    mult: function (f) {
+    }
+
+    mult(f) {
         this.x *= f;
         this.y *= f;
         return this;
     }
-};
+}
 
 const Leaf = function (p, r, c, ctx) {
     this.p = p || null;
@@ -34,6 +38,16 @@ const Leaf = function (p, r, c, ctx) {
     this.ctx = ctx;
 };
 
+let Branch = function (p, v, r, c, t) {
+    this.p = p || null;
+    this.v = v || null;
+    this.r = r || 0;
+    this.length = 0;
+    this.generation = 1;
+    this.tree = t || null;
+    this.color = c || 'rgba(255,255,255,1.0)';
+    this.register();
+};
 Leaf.prototype = {
     render: function () {
         const that = this;
@@ -51,18 +65,8 @@ Leaf.prototype = {
             })(i);
         }
     }
-}
-
-var Branch = function (p, v, r, c, t) {
-    this.p = p || null;
-    this.v = v || null;
-    this.r = r || 0;
-    this.length = 0;
-    this.generation = 1;
-    this.tree = t || null;
-    this.color = c || 'rgba(255,255,255,1.0)';
-    this.register();
 };
+
 
 Branch.prototype = {
     register: function () {
@@ -192,7 +196,7 @@ const Tree = function () {
         new Branch(new Vector(center_x, canvas_height), new Vector(Math.random(-1, 1), -y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
     }
     t.render(function () {
-        statMsg.innerHTML=this.stat.fork;
+        statMsg.innerHTML = this.stat.fork;
     });
 
 })();
