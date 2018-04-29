@@ -1,4 +1,6 @@
-class Vector {
+const trunk = 4;     //主干的数量
+
+class Vector {  //生长方向向量
     constructor(x, y) {
         this.x = x || 0;
         this.y = y || 0;
@@ -15,12 +17,8 @@ class Vector {
     }
 
     rotate(theta) {
-        const x = this.x;
-        const y = this.y;
         this.x = Math.cos(theta) * this.x - Math.sin(theta) * this.y;
         this.y = Math.sin(theta) * this.x + Math.cos(theta) * this.y;
-        //this.x = Math.cos(theta) * x - Math.sin(theta) * y;
-        //this.y = Math.sin(theta) * x + Math.cos(theta) * y;
         return this;
     }
 
@@ -38,6 +36,7 @@ const Leaf = function (p, r, c, ctx) {
     this.ctx = ctx;
 };
 
+//主干分支
 let Branch = function (p, v, r, c, t) {
     this.p = p || null;
     this.v = v || null;
@@ -54,15 +53,13 @@ Leaf.prototype = {
         const ctx = this.ctx;
         const f = Branch.random(1, 2);
         for (let i = 0; i < 5; i++) {
-            (function (r) {
-                setTimeout(function () {
-                    ctx.beginPath();
-                    ctx.fillStyle = that.color;
-                    ctx.moveTo(that.p.x, that.p.y);
-                    ctx.arc(that.p.x, that.p.y, r, 0, Branch.circle, true);
-                    ctx.fill();
-                }, r * 60);
-            })(i);
+            setTimeout(() => {
+                ctx.beginPath();
+                ctx.fillStyle = that.color;
+                ctx.moveTo(that.p.x, that.p.y);
+                ctx.arc(that.p.x, that.p.y, i, 0, Branch.circle, true);
+                ctx.fill();
+            }, i * 60);
         }
     }
 };
@@ -111,20 +108,16 @@ Branch.prototype = {
 };
 
 Branch.circle = 2 * Math.PI;
-Branch.random = function (min, max) {
-    return Math.random() * (max - min) + min;
-};
+Branch.random = (min, max) => Math.random() * (max - min) + min;
+
 Branch.clone = function (b) {
     const r = new Branch(new Vector(b.p.x, b.p.y), new Vector(b.v.x, b.v.y), b.r, b.color, b.tree);
     r.generation = b.generation + 1;
     return r;
 };
-Branch.rgba = function (r, g, b, a) {
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-};
-Branch.randomrgba = function (min, max, a) {
-    return Branch.rgba(Math.round(Branch.random(min, max)), Math.round(Branch.random(min, max)), Math.round(Branch.random(min, max)), a);
-};
+Branch.rgba = (r, g, b, a) => `rgba(${r},${g},${b},${a})`;
+
+Branch.randomrgba = (min, max, a) => Branch.rgba(Math.round(Branch.random(min, max)), Math.round(Branch.random(min, max)), Math.round(Branch.random(min, max)), a);
 
 const Tree = function () {
     let branches = [];
@@ -153,9 +146,7 @@ const Tree = function () {
                     branches[i].grow();
                 }
             }
-            else {
-                //clearInterval(timer);
-            }
+            // else //clearInterval(timer);
         }, 1000 / 30);
     };
     this.init = function (ctx) {
@@ -174,14 +165,13 @@ const Tree = function () {
 
     // init
     const canvas_width = window.innerWidth;
-    const canvas_height = window.innerHeight - 30;
+    const canvas_height = window.innerHeight;
     const center_x = canvas_width / 2;
     const stretch_factor = 600 / canvas_height;
     let y_speed = 3 / stretch_factor;
     const statMsg = document.querySelector("#statMsg");
 
     // tx
-
     const canvas = document.querySelector('#canvas');
     canvas.width = canvas_width;
     canvas.height = canvas_height;
@@ -189,14 +179,21 @@ const Tree = function () {
     ctx.globalCompositeOperation = "lighter";
 
     // tree
-
     const t = new Tree();
     t.init(ctx);
-    for (let i = 0; i < 3; i++) {
-        new Branch(new Vector(center_x, canvas_height), new Vector(Math.random(-1, 1), -y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
+    for (let i = 0; i < trunk; i++) {
+        new Branch(new Vector(center_x, canvas_height), new Vector(Math.random()*2-1, -y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
     }
     t.render(function () {
         statMsg.innerHTML = this.stat.fork;
     });
 
 })();
+
+canvas.addEventListener('click', () => {
+    let button = document.querySelector('#download');
+    button.href = canvas.toDataURL("image/png");
+    button.click();
+}, false);
+
+console.log('点击即可下载图片');

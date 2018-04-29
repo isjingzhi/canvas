@@ -19,13 +19,24 @@
             -moz-transform: rotate(180deg);
             -ms-transform: rotate(180deg);
             -o-transform: rotate(180deg);
-            transform: rotate(180deg);  //默认是以中心为轴的
+            transform: rotate(180deg);
+            /*默认是以中心为旋转轴的*/
+        }
+
+        #statMsg {
+            position: fixed;
+            display: flex;
+            top: 0;
+            left: 0;
+            padding: 5px;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 <canvas id='canvas'></canvas>
-<div id="statMsg" style="">阶段</div>
+<a download="tree.png" style="display: none;" id="download"></a>
+<div id="statMsg">阶段</div>
 <script type="text/javascript" src="main.js"></script>
 </body>
 </html>
