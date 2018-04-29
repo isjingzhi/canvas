@@ -19,25 +19,25 @@ tela.width = w = window.innerWidth;
 tela.height = h = window.innerHeight;
 
 const ctx = tela.getContext('2d');
+const colors = ["#feea00", "#a9df85", "#5dc0ad", "#ff9a00", "#fa3f20"];
+const types = ["double", "wrap", "fill", "empty"];
 
 class Particle {
     //实现一种正态分布  //!!!!!!    //类比高尔顿钉板
     constructor(ctx, x = (w / 2) + (Math.random() * w / 2 - Math.random() * w / 2), y = (h / 2) + (Math.random() * h / 2 - Math.random() * h / 2)) {
-        let colors = ["#feea00", "#a9df85", "#5dc0ad", "#ff9a00", "#fa3f20"];
-        let types = ["double", "wrap", "fill", "empty"];
         // this.random = Math.random();
         this.ctx = ctx;
         this.progress = 0;
         //瞬时坐标和初始坐标
-        this.x=this.X = x;
-        this.y=this.Y = y;
+        this.x = this.X = x;
+        this.y = this.Y = y;
 
         //瞬时极坐标
-        this.R=0;
-        this.radian=Math.random()*2*Math.PI;
+        this.R = 0;
+        this.radian = Math.random() * 2 * Math.PI;
 
-        this.RDelta=Math.random()*0.4;
-        this.radDelta=Math.random()*0.04-0.02;
+        this.RDelta = Math.random() * 0.4 + 0.1;
+        this.radDelta = Math.random() * 0.04 - 0.02;
 
         this.radius = 2 + (8 * Math.random());
         this.type = types[Particle.randomIntFromInterval(0, types.length - 1)];     //通过类名调用静态方法...
@@ -61,7 +61,7 @@ class Particle {
         let color = this.color;
         switch (this.type) {
             case "wrap":  //空心套实心
-                this.createArcFill(this.radius-1, color);
+                this.createArcFill(this.radius - 1, color);
                 this.createArcEmpty(this.radius + lineWidth, lineWidth / 2, color);
                 break;
             case "fill":    //实心
@@ -72,7 +72,7 @@ class Particle {
                 break;
             case "double":  //空心套空心
                 this.createArcEmpty(this.radius, lineWidth / 2, color);
-                this.createArcEmpty(this.radius /2, lineWidth / 2, color);
+                this.createArcEmpty(this.radius / 2, lineWidth / 2, color);
                 break;
             default:
                 break;
@@ -98,16 +98,11 @@ class Particle {
     }
 
     move() {
-        // this.x += Math.cos(this.a) * this.s;
-        // this.y += Math.sin(this.a) * this.s;
-        // this.a *=  0.999;
-        // this.s+=0.05;
+        this.R += this.RDelta;
+        this.radian += this.radDelta;
 
-        this.R+=this.RDelta;
-        this.radian+=this.radDelta;
-
-        this.x=this.X+this.R*Math.cos(this.radian);
-        this.y=this.Y-this.R*Math.sin(this.radian);
+        this.x = this.X + this.R * Math.cos(this.radian);
+        this.y = this.Y - this.R * Math.sin(this.radian);
 
         //边界检测
         if (this.x < -this.radius || this.x > w + this.radius) {
@@ -118,13 +113,11 @@ class Particle {
             return false
         }
 
-        // if (this.R > h )return false;
-
         this.render();
         return true
     }
 
-    static calculateDistance(v1, v2) {
+    static distance(v1, v2) {
         let x = Math.abs(v1.x - v2.x);
         let y = Math.abs(v1.y - v2.y);
         return Math.sqrt((x * x) + (y * y));
@@ -137,14 +130,10 @@ class Particle {
  */
 function populate(num) {    //填入
     for (let i = 0; i < num; i++) {
-        setTimeout(
-            function (x) {
-                return function () {
-                    // Add particle
-                    particles.push(new Particle(ctx))
-                };
-            }(i)
-            , frequency * i);
+        setTimeout(() => {
+            // Add particle
+            particles.push(new Particle(ctx))
+        }, frequency * i);
     }
     return particles.length
 }
