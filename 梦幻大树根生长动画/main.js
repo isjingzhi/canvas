@@ -29,26 +29,17 @@ class Vector {  //生长方向向量
     }
 }
 
-const Leaf = function (p, r, c, ctx) {
-    this.p = p || null;
-    this.r = r || 0;
-    this.c = c || 'rgba(255,255,255,1.0)';
-    this.ctx = ctx;
-};
 
-//主干分支
-let Branch = function (p, v, r, c, t) {
-    this.p = p || null;
-    this.v = v || null;
-    this.r = r || 0;
-    this.length = 0;
-    this.generation = 1;
-    this.tree = t || null;
-    this.color = c || 'rgba(255,255,255,1.0)';
-    this.register();
-};
-Leaf.prototype = {
-    render: function () {
+
+class Leaf {
+    constructor(p, r, c, ctx) {  //树枝末端的亮点
+        this.p = p || null;
+        this.r = r || 0;
+        this.c = c || 'rgba(255,255,255,1.0)';
+        this.ctx = ctx;
+    }
+
+    render() {
         const that = this;
         const ctx = this.ctx;
         const f = Branch.random(1, 2);
@@ -62,9 +53,19 @@ Leaf.prototype = {
             }, i * 60);
         }
     }
+}
+
+//主干分支
+let Branch = function (p, v, r, c, t) {
+    this.p = p || null;     //树根的起始坐标
+    this.v = v || null;     //初始方向?
+    this.r = r || 0;
+    this.length = 0;
+    this.generation = 1;
+    this.tree = t || null;
+    this.color = c || 'rgba(255,255,255,1.0)';
+    this.register();
 };
-
-
 Branch.prototype = {
     register: function () {
         this.tree.addBranch(this);
@@ -181,9 +182,10 @@ const Tree = function () {
     // tree
     const t = new Tree();
     t.init(ctx);
-    for (let i = 0; i < trunk; i++) {
-        new Branch(new Vector(center_x, canvas_height), new Vector(Math.random()*2-1, -y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
-    }
+    // for (let i = 0; i < trunk; i++) {
+    new Branch(new Vector(canvas_width * 2 / 3, canvas_height), new Vector(0, -y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
+    new Branch(new Vector(canvas_width / 3, 0), new Vector(0, y_speed), 15 / stretch_factor, Branch.randomrgba(0, 255, 0.3), t);
+    // }
     t.render(function () {
         statMsg.innerHTML = this.stat.fork;
     });
