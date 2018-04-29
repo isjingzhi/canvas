@@ -1,4 +1,4 @@
-let max_particles = 100;
+let max_particles = 80;
 let particles = [];
 let frequency = 100;
 let init_num = max_particles;
@@ -7,39 +7,41 @@ let time_to_recreate = false;
 
 let w, h;
 
-// Enable repopolate
+// Enable repopulate
 setTimeout(function () {
     time_to_recreate = true;
 }.bind(this), max_time);
 
-// Popolate particles
-popolate(max_particles);
+populate(max_particles);
 
 const tela = document.querySelector('#canvas');
 tela.width = w = window.innerWidth;
 tela.height = h = window.innerHeight;
-// $("body").append(tela);
 
 const ctx = tela.getContext('2d');
 
 class Particle {
-    constructor(ctx, options) {
+    //实现一种正态分布  //!!!!!!    //类比高尔顿钉板
+    constructor(ctx, x = (w / 2) + (Math.random() * w / 2 - Math.random() * w / 2), y = (h / 2) + (Math.random() * h / 2 - Math.random() * h / 2)) {
         let colors = ["#feea00", "#a9df85", "#5dc0ad", "#ff9a00", "#fa3f20"];
         let types = ["double", "wrap", "fill", "empty"];
-        this.random = Math.random();
+        // this.random = Math.random();
         this.ctx = ctx;
         this.progress = 0;
+        //瞬时坐标和初始坐标
+        this.x=this.X = x;
+        this.y=this.Y = y;
 
-        this.x = (w / 2) + (Math.random() * 200 - Math.random() * 200);
-        this.y = (h / 2) + (Math.random() * 200 - Math.random() * 200);
-        this.w = w;
-        this.h = h;
-        this.radius = 1 + (8 * this.random);
+        //瞬时极坐标
+        this.R=0;
+        this.radian=Math.random()*2*Math.PI;
+
+        this.RDelta=Math.random()*0.4;
+        this.radDelta=Math.random()*0.04-0.02;
+
+        this.radius = 2 + (8 * Math.random());
         this.type = types[Particle.randomIntFromInterval(0, types.length - 1)];     //通过类名调用静态方法...
         this.color = colors[Particle.randomIntFromInterval(0, colors.length - 1)];
-        this.a = 0;
-        this.s = (this.radius + (Math.random())) / 10;
-        //this.s = 12 //Math.random() * 1;
     }
 
     getCoordinates() {
@@ -53,13 +55,13 @@ class Particle {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    render() {
+    render() {      //渲染(画图)
         // Create arc
-        let lineWidth = 0.2 + (2.8 * this.random);
+        let lineWidth = 2;
         let color = this.color;
         switch (this.type) {
             case "wrap":  //空心套实心
-                this.createArcFill(this.radius, color);
+                this.createArcFill(this.radius-1, color);
                 this.createArcEmpty(this.radius + lineWidth, lineWidth / 2, color);
                 break;
             case "fill":    //实心
@@ -70,7 +72,7 @@ class Particle {
                 break;
             case "double":  //空心套空心
                 this.createArcEmpty(this.radius, lineWidth / 2, color);
-                this.createArcEmpty(this.radius - lineWidth * 2, lineWidth / 2, color);
+                this.createArcEmpty(this.radius /2, lineWidth / 2, color);
                 break;
             default:
                 break;
@@ -96,19 +98,28 @@ class Particle {
     }
 
     move() {
+        // this.x += Math.cos(this.a) * this.s;
+        // this.y += Math.sin(this.a) * this.s;
+        // this.a *=  0.999;
+        // this.s+=0.05;
 
-        this.x += Math.cos(this.a) * this.s;
-        this.y += Math.sin(this.a) * this.s;
-        this.a += Math.random() * 0.4 - 0.2;
+        this.R+=this.RDelta;
+        this.radian+=this.radDelta;
+
+        this.x=this.X+this.R*Math.cos(this.radian);
+        this.y=this.Y-this.R*Math.sin(this.radian);
 
         //边界检测
-        if (this.x < -this.radius || this.x > this.w + this.radius) {
+        if (this.x < -this.radius || this.x > w + this.radius) {
             return false
         }
 
-        if (this.y < -this.radius || this.y > this.h + this.radius) {
+        if (this.y < -this.radius || this.y > h + this.radius) {
             return false
         }
+
+        // if (this.R > h )return false;
+
         this.render();
         return true
     }
@@ -124,7 +135,7 @@ class Particle {
  * Function to clear layer ctx
  * @num:number number of particles
  */
-function popolate(num) {
+function populate(num) {    //填入
     for (let i = 0; i < num; i++) {
         setTimeout(
             function (x) {
@@ -139,10 +150,8 @@ function popolate(num) {
 }
 
 function clear() {
-    // ctx.globalAlpha=0.04;
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillRect(0, 0, tela.width, tela.height);
-    // ctx.globalAlpha=1;
 }
 
 //两点一线
@@ -156,19 +165,15 @@ function connection() {
             ctx.moveTo(box1.x, box1.y);
             ctx.lineTo(box2.x, box2.y);
             ctx.lineWidth = 0.45;
-            ctx.strokeStyle = "rgba(255,255,255,0.5)";
+            ctx.strokeStyle = "rgba(255,255,255,0.4)";
             ctx.stroke();
             ctx.closePath();
         }
-
         old_element = element
     })
 }
 
-/*
- * Function to update particles in ctx
- */
-(function update() {
+(function animate() {
     clear();
     connection();
     //粒子位置更新的同时过滤
@@ -176,8 +181,13 @@ function connection() {
     // Recreate particles
     if (time_to_recreate) {
         if (particles.length < init_num) {
-            popolate(1);
+            populate(1);
         }
     }
-    requestAnimationFrame(update.bind(this));   //这里的this是window,因为this指向的是所在函数体(也就是update定义的内部)被调用的对象,而不是参数体中!!!!!
+    requestAnimationFrame(animate.bind(this));   //这里的this是window,因为this指向的是所在函数体(也就是animate定义的内部)被调用的对象,而不是参数体中!!!!!
 })();
+
+
+addEventListener('click', (e) => {
+    particles.push(new Particle(ctx, e.clientX, e.clientY));
+});
