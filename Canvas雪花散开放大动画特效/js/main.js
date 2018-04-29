@@ -1,3 +1,5 @@
+let canvas = document.querySelector('#canvas');
+
 const RENDERER = {
     SNOW_COUNT: {INIT: 100, DELTA: 1},
     BACKGROUND_COLOR: 'hsl(%h, 50%, %l%)',
@@ -11,14 +13,16 @@ const RENDERER = {
         this.render();
     },
     setParameters: function () {
-        this.$window = $(window);
+        this.window = window;
 
-        this.$container = $('#jsi-snow-container');
-        this.width = this.$container.width();
-        this.height = this.$container.height();
+        canvas.width=this.width = window.innerWidth;
+        canvas.height=this.height = window.innerHeight;
+        this.container = document.querySelector('#jsi-snow-container');
+        // this.$container = $('#jsi-snow-container');
         this.center = {x: this.width / 2, y: this.height / 2};
         this.countRate = this.width * this.height / 500 / 500;
-        this.canvas = $('<canvas />').attr({width: this.width, height: this.height}).appendTo(this.$container).get(0);
+        // this.canvas = $('<canvas />').attr({width: this.width, height: this.height}).appendTo(this.$container).get(0);
+        this.canvas=canvas;
         this.context = this.canvas.getContext('2d');
 
         this.radius = Math.sqrt(this.center.x * this.center.x + this.center.y * this.center.y);
@@ -84,6 +88,7 @@ SNOW.prototype = {
         if (!this.canvas) {
             this.radius = this.RADIUS + this.TOP_RADIUS.MAX * 2 + this.LINE_WIDTH;
             this.length = this.radius * 2;
+            // this.canvas = canvas;
             this.canvas = $('<canvas />').attr({width: this.length, height: this.length}).get(0);
             this.context = this.canvas.getContext('2d');
         }

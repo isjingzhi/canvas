@@ -2,7 +2,7 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 let counter = 0;
 const minFontSize = 3;
-const mouse = {x: 0, y: 0, down: false};
+const mouse = {x: 0, y: 0, down: false};    //鼠标对象
 const position = {x: 0, y: window.innerHeight / 2};     //应该是上一次鼠标的位置
 const letters = "坚持一件你认为有价值的事情!";
 const angleDistortion = 0; //角变形
@@ -30,12 +30,13 @@ function draw() {
         const letter = letters[counter];
         const d = distance(position, mouse);
         const fontSize = minFontSize + d / 2;
-        const stepSize = textWidth(letter, fontSize);
+        ctx.font = `${fontSize}px Georgia`; //定义字号，字体
+
+        const stepSize = ctx.measureText(letter).width;
 
         if (d > stepSize) {
             //返回从X轴正向逆时针到（x,y）点的角度
             const angle = Math.atan2(mouse.y - position.y, mouse.x - position.x);
-            ctx.font = `${fontSize}px Georgia`; //定义字号，字体
             ctx.fillStyle = "magenta";
             ctx.save(); //保存当前的环境状态
             ctx.translate(position.x, position.y); //将新的画布（0,0）改为（x,y）
@@ -44,9 +45,7 @@ function draw() {
             ctx.restore(); //返回之前保存过的路径状态和属性。
 
             counter++;
-            if (counter > letters.length - 1) {
-                counter = 0;
-            }
+            if (counter > letters.length - 1) counter = 0;
             position.x = position.x + Math.cos(angle) * stepSize;
             position.y = position.y + Math.sin(angle) * stepSize;
         }
@@ -55,32 +54,18 @@ function draw() {
 
 
 //决定绘制文本字体大小
-//当鼠标按下时，获得鼠标移动前的x,y坐标，传入pt中
-//当鼠标移动时，获得鼠标移动后的x,y坐标，传入pt2中
+//当鼠标按下时，获得鼠标移动前的x,y坐标，传入p1中
+//当鼠标移动时，获得鼠标移动后的x,y坐标，传入p2中
 //通过获取这两个状态的坐标，来设置文字的大小，
 //与函数textWidth()函数共同，表现出一种，速度越快，文字越大的效果
-function distance(pt, pt2) {
-    let xs;
-    let ys;
-    xs = pt2.x - pt.x;
-    xs = xs * xs;
-    ys = pt2.y - pt.y;
-    ys = ys * ys;
-    return Math.sqrt(xs + ys);
-}
 
-function textWidth(string, size) {
-    ctx.font = size + "px Georgia"; //定义字号，字体
-    if (ctx.fillText) {
-        return ctx.measureText(string).width; //该函数以像素指定文字的宽度。
-    } else if (ctx.mozDrawText) {
-        return ctx.mozMeasureText(string);
-    }
-}
+let distance = (p1, p2) => Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+
 
 (window.onresize = function (event) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    //超大画布
+    canvas.width = window.innerWidth * 2;
+    canvas.height = window.innerHeight * 2;
 })();
 
 canvas.addEventListener('mousemove', mouseMove, false);
