@@ -8,16 +8,16 @@ tela.height = h = window.innerHeight;
 
 const ctx = tela.getContext('2d');
 // const colors = ["#feea00", "#a9df85", "#5dc0ad", "#ff9a00", "#fa3f20"];
-const types = ["double", "wrap", "fill", "empty"];
+const types = ["double", "wrap", "fill", "empty"];  //四种粒子样式
 
 class Particle {
     //实现一种正态分布  //!!!!!!    //类比高尔顿钉板
     constructor(x = (w / 2) + (Math.random() * w / 2 - Math.random() * w / 2), y = (h / 2) + (Math.random() * h / 2 - Math.random() * h / 2)) {
-        //瞬时坐标和初始坐标
+        //瞬时坐标 和 初始坐标
         this.x = this.X = x;
         this.y = this.Y = y;
 
-        //瞬时极坐标
+        //瞬时极坐标(R,radian)
         this.R = 0;     //半径
         this.radian = Math.random() * 2 * Math.PI;  //弧度rad
 
@@ -42,7 +42,6 @@ class Particle {
     }
 
     render() {      //渲染(画图)
-        // Create arc
         let lineWidth = 2;
         let color = this.color;
         switch (this.type) {
@@ -62,7 +61,6 @@ class Particle {
                 break;
             default:
                 break;
-
         }
     }
 
@@ -83,7 +81,7 @@ class Particle {
         ctx.closePath();
     }
 
-    move() {
+    update() {  //粒子更新兼边间检查
         this.R += this.RDelta;
         this.radian += this.radDelta;
 
@@ -91,26 +89,15 @@ class Particle {
         this.y = this.Y - this.R * Math.sin(this.radian);
 
         //边界检测
-        if (this.x < -this.radius || this.x > w + this.radius) {
-            return false
-        }
-
-        if (this.y < -this.radius || this.y > h + this.radius) {
-            return false
-        }
+        if (this.x < -this.radius || this.x > w + this.radius)
+            return false;
+        if (this.y < -this.radius || this.y > h + this.radius)
+            return false;
 
         this.render();
-        return true
-    }
-
-    static distance(v1, v2) {
-        let x = Math.abs(v1.x - v2.x);
-        let y = Math.abs(v1.y - v2.y);
-        return Math.sqrt((x * x) + (y * y));
+        return true;
     }
 }
-
-// let interval = 100;
 
 //初始化80个粒子
 let preview = setInterval(() => {
@@ -119,7 +106,7 @@ let preview = setInterval(() => {
         preview = null;
     }
     particles.push(new Particle());
-}, 80);
+}, 70);
 
 function clear() {
     ctx.fillStyle = 'rgba(0,0,0,1)';
@@ -149,12 +136,11 @@ function connect() {
     clear();
     connect();
     //粒子位置更新的同时过滤
-    particles = particles.filter((p) => p.move());
-// 等待预处理结束后进行周期填入粒子
-    if (!preview) {
+    particles = particles.filter((p) => p.update());
+    //等待预处理状态结束后进行周期填入粒子
+    if (!preview)
         if (particles.length < stable_number)
             particles.push(new Particle());
-    }
     requestAnimationFrame(animate.bind(this));   //这里的this是window,因为this指向的是所在函数体(也就是animate定义的内部)被调用的对象,而不是参数体中!!!!!
 })();
 
