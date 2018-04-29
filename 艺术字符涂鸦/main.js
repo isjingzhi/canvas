@@ -72,6 +72,3 @@ canvas.addEventListener('mousemove', mouseMove, false);
 canvas.addEventListener('mousedown', mouseDown, false);
 canvas.addEventListener('mouseup', mouseUp, false);
 canvas.addEventListener('mouseout', mouseUp, false);
-
-(function init() {
-})();
