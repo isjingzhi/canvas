@@ -1,11 +1,13 @@
-let c = document.querySelector('.c') /* canvas element */,
+let c = document.querySelector('#c') /* canvas element */,
     w /* canvas width */, h /* canvas height */,
     ctx = c.getContext('2d') /* canvas context */,
 
     /* previous & current coordinates */
     x0, y0, x, y,
-    t = 0, t_step = 1 / 20,
+    t = 0,
+    t_step = 1 / 20,    //水平速度增量
     tmp,
+    period = 2,   //振动周期参数
 
     /* just me being lazy */
     exp = Math.exp, pow = Math.pow, sqrt = Math.sqrt,
@@ -20,9 +22,7 @@ let rand = function (max, min) {
     return a + (b - a) * Math.random();
 };
 
-let trimUnit = function (input_str, unit) {
-    return parseInt(input_str.split(unit)[0], 10);
-};
+let trimUnit = (input_str, unit) => parseInt(input_str.split(unit)[0], 10);
 
 let initCanvas = function () {
     let s = getComputedStyle(c);
@@ -43,13 +43,15 @@ let wave = function () {
     for (x = 0; x < w; x = x + 3) {
         y = 9 * sqrt(x) * sin(x / 23 / PI + t / 3 + sin(x / 29 + t)) +
             32 * sin(t) * cos(x / 19 + t / 7) +
-            16 * cos(t) * sin(sqrt(x) + rand(3, 2) * tmp) + h / 2;
+            //     抖动周期                    振幅大小
+            16 * cos(t / period) * sin(sqrt(x) + rand(3, 2) * tmp) +      //这一项决定了抖动偏移值
+            h / 2;
 
         ctx.beginPath();
         ctx.moveTo(x0, y0);
         ctx.lineTo(x, y);
         ctx.lineWidth = 2;
-        ctx.strokeStyle = 'hsl(' + (2 * x / w + t) * 180 + ', 100%, 65%)';
+        ctx.strokeStyle = `hsl( ${(2 * x / w + t) * 180}, 100%, 65%)`;
         ctx.stroke();
 
         x0 = x;
@@ -67,7 +69,15 @@ let wave = function () {
 setTimeout(function () {
     initCanvas();
     wave();
-
-    /* fix looks on resize */
     addEventListener('resize', initCanvas, false);
 }, 15);
+
+addEventListener('keydown', () => {
+    t_step = 1 / 10;
+    period=4;
+});
+
+addEventListener('keyup', () => {
+    t_step = 1 / 20;
+    period=2;
+});
