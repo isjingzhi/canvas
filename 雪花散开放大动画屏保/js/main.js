@@ -89,7 +89,10 @@ SNOW.prototype = {
             this.radius = this.RADIUS + this.TOP_RADIUS.MAX * 2 + this.LINE_WIDTH;
             this.length = this.radius * 2;
             // this.canvas = canvas;
-            this.canvas = $('<canvas />').attr({width: this.length, height: this.length}).get(0);
+            // this.canvas = $('<canvas />').get(0);
+            this.canvas = document.createElement('canvas');
+            this.canvas.width=this.length;
+            this.canvas.height=this.length;
             this.context = this.canvas.getContext('2d');
         }
         this.topRadius = this.getRandomValue(this.TOP_RADIUS);
