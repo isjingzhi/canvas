@@ -31,7 +31,7 @@ let initCanvas = function () {
     h = c.height = trimUnit(s.height, 'px');
 };
 
-let positiveCosine = (x) => cos(x) > 0 ? cos(x) : 0;
+let positiveCosine = (x) => cos(x) > 0 ? cos(x) : 0;    //非负余弦函数:将cos()<0的曲线去掉以增加不动动的时间段
 
 let wave = function () {
     x0 = -1;
@@ -40,8 +40,7 @@ let wave = function () {
     ctx.clearRect(0, 0, w, h);
 
     tmp = pow(t, 1.75) / 19;
-    /* keep computation out of loop */
-
+    //变态的简谐运动
     for (x = 0; x < w; x = x + 3) {
         y = 9 * sqrt(x) * sin(x / 23 / PI + t / 3 + sin(x / 29 + t)) +
             32 * sin(t) * cos(x / 19 + t / 7) +
@@ -83,3 +82,5 @@ addEventListener('keyup', () => {
     t_step = 1 / 20;
     period = 2;
 });
+
+console.log('空格键可以加速');
