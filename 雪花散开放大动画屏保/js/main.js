@@ -2,7 +2,7 @@ let canvas = document.querySelector('#canvas');
 
 const RENDERER = {
     SNOW_COUNT: {INIT: 100, DELTA: 1},
-    BACKGROUND_COLOR: 'hsl(%h, 50%, %l%)',
+    BACKGROUND_COLOR: 'hsl(%h, 50%, %l%)',  //饱和度不高,因背景色不需要太鲜艳;
     INIT_HUE: 180,
     DELTA_HUE: 0.1,
 
@@ -15,19 +15,19 @@ const RENDERER = {
     setParameters: function () {
         this.window = window;
 
-        canvas.width=this.width = window.innerWidth;
-        canvas.height=this.height = window.innerHeight;
+        canvas.width = this.width = window.innerWidth;
+        canvas.height = this.height = window.innerHeight;
         this.container = document.querySelector('#jsi-snow-container');
         // this.$container = $('#jsi-snow-container');
         this.center = {x: this.width / 2, y: this.height / 2};
         this.countRate = this.width * this.height / 500 / 500;
         // this.canvas = $('<canvas />').attr({width: this.width, height: this.height}).appendTo(this.$container).get(0);
-        this.canvas=canvas;
-        this.context = this.canvas.getContext('2d');
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext('2d');
 
         this.radius = Math.sqrt(this.center.x * this.center.x + this.center.y * this.center.y);
         this.hue = this.INIT_HUE;
-        this.snows = [];
+        this.snows = [];    //存放SNOW对象
     },
     reconstructMethod: function () {
         this.render = this.render.bind(this);
@@ -40,18 +40,18 @@ const RENDERER = {
     render: function () {
         requestAnimationFrame(this.render);
 
-        const gradient = this.context.createRadialGradient(this.center.x, this.center.y, 0, this.center.x, this.center.y, this.radius),
+        const gradient = this.ctx.createRadialGradient(this.center.x, this.center.y, 0, this.center.x, this.center.y, this.radius),
             backgroundColor = this.BACKGROUND_COLOR.replace('%h', this.hue);
 
-        gradient.addColorStop(0, backgroundColor.replace('%l', 30));
-        gradient.addColorStop(0.2, backgroundColor.replace('%l', 20));
-        gradient.addColorStop(1, backgroundColor.replace('%l', 5));
+        gradient.addColorStop(0, backgroundColor.replace('%l', '30'));
+        gradient.addColorStop(0.2, backgroundColor.replace('%l', '20'));
+        gradient.addColorStop(1, backgroundColor.replace('%l', '5'));   //明度足够小以衬托白色雪花
 
-        this.context.fillStyle = gradient;
-        this.context.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, this.width, this.height);
 
         for (let i = this.snows.length - 1; i >= 0; i--) {
-            if (!this.snows[i].render(this.context)) {
+            if (!this.snows[i].render(this.ctx)) {
                 this.snows.splice(i, 1);
             }
         }
@@ -88,12 +88,10 @@ SNOW.prototype = {
         if (!this.canvas) {
             this.radius = this.RADIUS + this.TOP_RADIUS.MAX * 2 + this.LINE_WIDTH;
             this.length = this.radius * 2;
-            // this.canvas = canvas;
-            // this.canvas = $('<canvas />').get(0);
-            this.canvas = document.createElement('canvas');
-            this.canvas.width=this.length;
-            this.canvas.height=this.length;
-            this.context = this.canvas.getContext('2d');
+            this.canvas = document.createElement('canvas');     //临时的canvas
+            this.canvas.width = this.length;
+            this.canvas.height = this.length;
+            this.ctx = this.canvas.getContext('2d');
         }
         this.topRadius = this.getRandomValue(this.TOP_RADIUS);
 
@@ -123,16 +121,17 @@ SNOW.prototype = {
     getRandomValue: function (range) {
         return range.MIN + (range.MAX - range.MIN) * Math.random();
     },
-    createSnow: function () {
-        this.context.clearRect(0, 0, this.length, this.length);
+    createSnow: function () {   //draw
+        let y;
+        this.ctx.clearRect(0, 0, this.length, this.length);
 
-        this.context.save();
-        this.context.beginPath();
-        this.context.translate(this.radius, this.radius);
-        this.context.strokeStyle = this.COLOR;
-        this.context.lineWidth = this.LINE_WIDTH;
-        this.context.shadowColor = this.COLOR;
-        this.context.shadowBlur = this.BLUR;
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.translate(this.radius, this.radius);
+        this.ctx.strokeStyle = this.COLOR;
+        this.ctx.lineWidth = this.LINE_WIDTH;
+        this.ctx.shadowColor = this.COLOR;
+        this.ctx.shadowBlur = this.BLUR;
 
         const angle60 = Math.PI / 180 * 60,
             sin60 = Math.sin(angle60),
@@ -143,47 +142,54 @@ SNOW.prototype = {
             offsetCount = this.RADIUS / this.OFFSET;
 
         for (let i = 0; i < 6; i++) {
-            this.context.save();
-            this.context.rotate(angle60 * i);
+            let j;
+            this.ctx.save();
+            this.ctx.rotate(angle60 * i);   //雪花每60deg对称
 
-            for (var j = 0; j <= threshold; j++) {
-                var y = -this.OFFSET * j;
+            //花瓣样式
+            for (j = 0; j <= threshold; j++) {
+                y = -this.OFFSET * j;
 
-                this.context.moveTo(0, y);
-                this.context.lineTo(y * sin60, y * cos60);
+                this.ctx.moveTo(0, y);
+                this.ctx.lineTo(y * sin60, y * cos60);
             }
-            for (var j = threshold; j < offsetCount; j++) {
-                var y = -this.OFFSET * j,
-                    x = j * (offsetCount - j + 1) * rate;
 
-                this.context.moveTo(x, y - offsetY);
-                this.context.lineTo(0, y);
-                this.context.lineTo(-x, y - offsetY);
+            //花蕊样式
+            for (j = threshold; j < offsetCount; j++) {
+                y = -this.OFFSET * j;
+                let x = j * (offsetCount - j + 1) * rate;
+
+                this.ctx.moveTo(x, y - offsetY);
+                this.ctx.lineTo(0, y);
+                this.ctx.lineTo(-x, y - offsetY);
             }
-            this.context.moveTo(0, 0);
-            this.context.lineTo(0, -this.RADIUS);
-            this.context.arc(0, -this.RADIUS - this.topRadius, this.topRadius, Math.PI / 2, Math.PI * 2.5, false);
-            this.context.restore();
+
+            //每一瓣雪花的主枝干和末端的圆圈
+            this.ctx.moveTo(0, 0);
+            this.ctx.lineTo(0, -this.RADIUS);
+            this.ctx.arc(0, -this.RADIUS - this.topRadius, this.topRadius, Math.PI / 2, Math.PI * 2.5, false);
+            this.ctx.restore();
         }
-        this.context.stroke();
-        this.context.restore();
+        this.ctx.stroke();
+        this.ctx.restore();
     },
-    render: function (context) {
-        context.save();
+    render: function (ctx) {
+        ctx.save();
 
         if (this.scale > this.THRESHOLD_TRANSPARENCY) {
-            context.globalAlpha = Math.max(0, (1 - this.scale) / (1 - this.THRESHOLD_TRANSPARENCY));
+            ctx.globalAlpha = Math.max(0, (1 - this.scale) / (1 - this.THRESHOLD_TRANSPARENCY));
 
+            //边界检测
             if (this.scale > 1 || this.x < -this.radius || this.x > this.width + this.radius || this.y < -this.radius || this.y > this.height + this.radius) {
-                context.restore();
+                ctx.restore();
                 return false;
             }
         }
-        context.translate(this.x, this.y);
-        context.rotate(this.rotate);
-        context.scale(this.scale, this.scale);
-        context.drawImage(this.canvas, -this.radius, -this.radius);
-        context.restore();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotate);
+        ctx.scale(this.scale, this.scale);
+        ctx.drawImage(this.canvas, -this.radius, -this.radius);
+        ctx.restore();
 
         this.x += this.vx;
         this.y += this.vy;
@@ -193,6 +199,4 @@ SNOW.prototype = {
     }
 };
 
-// $(function(){
-// });
 RENDERER.init();
