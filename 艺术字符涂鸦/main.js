@@ -4,8 +4,8 @@ let counter = 0;
 const minFontSize = 3;
 const mouse = {x: 0, y: 0, down: false};    //鼠标对象
 const position = {x: 0, y: window.innerHeight / 2};     //应该是上一次鼠标的位置
-const letters = "坚持一件你认为有价值的事情!";
-const angleDistortion = 0; //角变形
+const letters = "生活不仅是眼前的苟且,还有诗和远方.";
+// const angleDistortion = 0; //角变形
 
 
 function mouseMove(event) {
@@ -14,7 +14,7 @@ function mouseMove(event) {
     draw();
 }
 
-function mouseUp(event) {
+function mouseUp() {
     mouse.down = false;
 }
 
@@ -37,7 +37,7 @@ function draw() {
         if (d > stepSize) {
             //返回从X轴正向逆时针到（x,y）点的角度
             const angle = Math.atan2(mouse.y - position.y, mouse.x - position.x);
-            ctx.fillStyle = "magenta";
+            ctx.fillStyle = "cyan";
             ctx.save(); //保存当前的环境状态
             ctx.translate(position.x, position.y); //将新的画布（0,0）改为（x,y）
             ctx.rotate(angle); //
@@ -62,7 +62,7 @@ function draw() {
 let distance = (p1, p2) => Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 
 
-(window.onresize = function (event) {
+(window.onresize = function () {
     //超大画布
     canvas.width = window.innerWidth * 2;
     canvas.height = window.innerHeight * 2;
