@@ -35,7 +35,7 @@ body {
 
 /*所有对等图片都是本身完全重叠的*/
 
-/*大正方体*/
+/*正方体*/
 .cube div {
     position: absolute;
     width: 150px;
@@ -44,7 +44,7 @@ body {
     transition: all .4s;
 }
 
-/*定义小正方体样式*/
+/*内部球体*/
 .cube span {
     display: block;
     width: 50px;
@@ -52,6 +52,13 @@ body {
     position: absolute;
     top: 50px;
     left: 50px;
+    border-radius: 50%;
+}
+
+/*图片*/
+.pic {
+    width: 150px;
+    height: 150px;
 }
 
 .cube .out_front {
@@ -78,62 +85,28 @@ body {
     transform: rotateX(-90deg) translateZ(75px);
 }
 
-/*定义所有图片样式*/
-.pic {
-    width: 150px;
-    height: 150px;
-}
-
-.cube .in_pic {
-    width: 50px;
-    height: 50px;
-}
-
-.cube .in_front {
-    transform: rotateY(0deg) translateZ(25px);
-}
-
-.cube .in_back {
-    transform: rotateY(180deg) translateZ(25px);
-}
-
-.cube .in_left {
-    transform: rotateY(-90deg) translateZ(25px);
-}
-
-.cube .in_right {
-    transform: rotateY(90deg) translateZ(25px);
-}
-
-.cube .in_top {
-    transform: rotateX(90deg) translateZ(25px);
-}
-
-.cube .in_bottom {
-    transform: rotateX(-90deg) translateZ(25px);
-}
-
+/*3D旋转和z轴坐标变化的顺序很重要*/
 /*鼠标移入后样式*/
 .cube:hover .out_front {
-    transform: rotateY(0deg) translateZ(120px);
+    transform: rotateY(0deg) translateZ(150px);
 }
 
 .cube:hover .out_back {
-    transform: translateZ(-120px) rotateY(180deg);
+    transform: rotateY(180deg) translateZ(150px);
 }
 
 .cube:hover .out_left {
-    transform: rotateY(-90deg) translateZ(120px);
+    transform: rotateY(-90deg) translateZ(150px);
 }
 
 .cube:hover .out_right {
-    transform: rotateY(90deg) translateZ(120px);
+    transform: rotateY(90deg) translateZ(150px);
 }
 
 .cube:hover .out_top {
-    transform: rotateX(90deg) translateZ(120px);
+    transform: rotateX(90deg) translateZ(150px);
 }
 
 .cube:hover .out_bottom {
-    transform: rotateX(-90deg) translateZ(120px);
+    transform: rotateX(-90deg) translateZ(150px);
 }
