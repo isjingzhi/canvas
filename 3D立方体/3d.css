@@ -21,7 +21,7 @@ body {
     /*表示所有子元素在3D空间中呈现。*/
     transform-style: preserve-3d;
     transform: rotateX(0deg) rotateY(0deg);
-    animation: rotate linear 20s infinite;
+    animation: rotate linear 20s infinite;      /*linear表示匀速变化*/
 }
 
 @-webkit-keyframes rotate {
