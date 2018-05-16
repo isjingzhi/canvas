@@ -9,9 +9,6 @@ body {
     height: 100%;
 }
 
-/*最外层容器样式*/
-.wrap {
-}
 
 /*包裹所有容器样式*/
 .cube {
@@ -109,4 +106,8 @@ body {
 
 .cube:hover .out_bottom {
     transform: rotateX(-90deg) translateZ(150px);
+}
+
+.cube:hover{
+    cursor: crosshair;
 }
