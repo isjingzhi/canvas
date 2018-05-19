@@ -38,6 +38,8 @@ body {
     width: 150px;
     height: 150px;
     opacity: 0.8;
+    /* !!!! 实现过渡 渐变的效果 */
+    /* 允许CSS属性值在一定的时间区间内平滑的过渡 */
     transition: all .4s;
 }
 
