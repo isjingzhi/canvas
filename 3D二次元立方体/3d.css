@@ -26,7 +26,15 @@ body {
         transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
     }
     to {
-        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+        transform: rotateX(360deg) rotateY(-360deg) rotateZ(360deg);
+    }
+}
+@keyframes rotate {
+    from {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
+    to {
+        transform: rotateX(360deg) rotateY(-360deg) rotateZ(360deg);
     }
 }
 
