@@ -3,7 +3,7 @@ var btn = document.getElementById("btn");
 var control = document.getElementById("control");
 // let canvas = document.querySelector('#canvas')
 
-// 不能对document监听，否则无论电子哪个元素都会响应
+// 不能对document监听，否则无论点击哪个元素都会响应
 canvas.addEventListener('click', function(e){
 	control.classList.toggle("slide");  //厉害
 }, false)
