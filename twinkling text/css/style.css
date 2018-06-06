@@ -112,6 +112,7 @@ body{
 	border-bottom: 2px solid #fff;
 }
 
+/* 出现 */
 #control.slide{
 	left: 0px;
 	-webkit-transition: left .5s linear;
