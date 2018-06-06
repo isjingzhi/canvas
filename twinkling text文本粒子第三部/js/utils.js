@@ -69,9 +69,8 @@ const utils = {
     var y = p0.y,
       y2 = p1.y;
     middley = (y + y2) / 2;
-    pos = [middlex, middley];
 
-    return pos;
+    return [middlex, middley];
   },
 
   getAngle: function (p0, p1) {
