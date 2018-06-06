@@ -102,7 +102,7 @@ body{
 	position: absolute;
 	top: 20px;
 	right: -40px;
-
+	opacity: 1;
 }
 #btn span{
 	display: block;
@@ -113,9 +113,14 @@ body{
 }
 
 /* 出现 */
-#control.slide{
+#control.show{
 	left: 0px;
-	-webkit-transition: left .5s linear;
+	-webkit-transition: left .4s linear;
+}
+
+#btn.hidden{
+	opacity: 0;
+	-webkit-transition: opacity .4s linear;
 }
 
 #tips{

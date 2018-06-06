@@ -5,7 +5,9 @@ var control = document.getElementById("control");
 
 // 不能对document监听，否则无论点击哪个元素都会响应
 canvas.addEventListener('click', function(e){
-	control.classList.toggle("slide");  //厉害
+    // 自动添加或删除某个class
+	control.classList.toggle("show");  
+	btn.classList.toggle("hidden");  
 }, false)
 
 
