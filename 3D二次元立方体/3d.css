@@ -119,5 +119,5 @@ body {
 }
 
 .cube:hover{
-    cursor: crosshair;
+    cursor: none;
 }
